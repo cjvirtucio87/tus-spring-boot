@@ -10,6 +10,24 @@ public class FileInfo implements Info {
     private Long fileOffset;
 
     @Override
+    public String getFileID() {
+        return id;
+    }
+
+    @Override
+    public String getFilename() {
+        return fileName;
+    }
+
+    @Override Long getUploadLength() {
+        return uploadLength;
+    }
+
+    @Override Long getFileOffset() {
+        return fileOffset;
+    }
+
+    @Override
     public void setFileID(String id) {
         this.id = id;
     }
@@ -25,5 +43,7 @@ public class FileInfo implements Info {
     }
 
     @Override
-    public
+    public void setFileOffset(Long fileOffset) {
+        this.fileOffset = fileOffset;
+    }
 }
