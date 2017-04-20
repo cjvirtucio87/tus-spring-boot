@@ -1,8 +1,13 @@
 package funWithRx;
 
+import funWithRx.service.PartInfo;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import rx.Observable;
+import rx.observables.StringObservable;
+
+import java.io.InputStream;
 
 /**
  * Created by cvirtucio on 4/18/2017.
@@ -27,9 +32,19 @@ public class UploadController {
     String createUpload() {
         return "Creating an upload.";
     }
-    @PatchMapping("/upload")
+
+    @PatchMapping("/upload/{id}")
     @ResponseBody
-    String updateUpload() {
+    String updateUpload(
+            String fileName,
+            Long partNumber,
+            Long uploadLength,
+            String userName,
+            InputStream inputStream
+    ) {
+        PartInfo partInfo = new PartInfo(fileName, partNumber, uploadLength, userName);
+        StringObservable.from(inputStream)
+            .flatMap;
         return "Uploading...";
     }
 

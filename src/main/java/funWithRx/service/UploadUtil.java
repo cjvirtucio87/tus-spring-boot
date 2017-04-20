@@ -1,16 +1,15 @@
 package funWithRx.service;
 
-import funWithRx.UploadController;
+import org.apache.log4j.Logger;
 import org.springframework.cglib.core.internal.Function;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
-import java.util.logging.Logger;
+
 import static java.io.File.separator;
 
 /**
@@ -18,7 +17,7 @@ import static java.io.File.separator;
  */
 
 public class UploadUtil {
-    private static final Logger log = Logger.getLogger(UploadController.class.toString());
+    private static final Logger log = Logger.getLogger(UploadUtil.class);
 
     public static Long writeFilePart(PartInfo partInfo) throws Exception {
         String filePath = createFilePath(partInfo);
@@ -26,7 +25,6 @@ public class UploadUtil {
         RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
         ReadableByteChannel is = UploadUtil.getByteChannel(raf.getFilePointer(), partInfo);
         FileChannel os = raf.getChannel();
-        Long newOffset;
 
         try {
             log.info("Writing file, " + filePath);
@@ -35,10 +33,10 @@ public class UploadUtil {
                 os.transferFrom(is, raf.getFilePointer(), bytesToTransfer);
             }
         } catch (IOException e) {
-            log.warning("Error writing file, " + filePath);
-            log.warning(e.getMessage());
+            log.error("Error writing file, " + filePath);
+            log.error("Error", e);
         } finally {
-            log.info("Closing channels for file, " + filePath);
+            log.info("Error writing file, " + filePath);
             is.close();
             raf.close();
         }
@@ -60,7 +58,8 @@ public class UploadUtil {
      */
     private static String createFilePath(PartInfo partInfo) {
         String path = System.getProperty("java.io.tmpdir") + separator + partInfo.getFileName() + "_" + partInfo.getPartNumber();
-        log.info("Creating file part, " + path);
+        String message = "Creating file part, " + path;
+        log.info(message);
         return path;
     }
 
@@ -68,5 +67,8 @@ public class UploadUtil {
         InputStream is = partInfo.getInputStream();
         is.skip(filePointer);
         return Channels.newChannel(is);
+    }
+
+    private UploadUtil() {
     }
 }
