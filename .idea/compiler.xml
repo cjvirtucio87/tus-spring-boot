@@ -10,7 +10,7 @@
         <module name="funWithRx" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8">
       <module name="funWithRx" target="1.6" />
     </bytecodeTargetLevel>
   </component>
