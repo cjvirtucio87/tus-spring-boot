@@ -1,6 +1,7 @@
 package funWithRx;
 
 import funWithRx.service.PartInfo;
+import funWithRx.service.UploadUtil;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import rx.Observable;
 import rx.observables.StringObservable;
 
 import java.io.InputStream;
+import java.util.Optional;
 
 /**
  * Created by cvirtucio on 4/18/2017.
@@ -18,7 +20,7 @@ public class UploadController {
     @GetMapping("/")
     @ResponseBody
     String home() {
-        return "Hello, world!";
+        return "index";
     }
 
     @RequestMapping(value="/upload", method=RequestMethod.HEAD)
@@ -42,9 +44,13 @@ public class UploadController {
             String userName,
             InputStream inputStream
     ) {
-        PartInfo partInfo = new PartInfo(fileName, partNumber, uploadLength, userName);
-        StringObservable.from(inputStream)
-            .flatMap;
+        PartInfo partInfo = new PartInfo(fileName, partNumber, uploadLength, userName, inputStream);
+
+        Optional.of(partInfo)
+                .map(UploadUtil::writeFilePart)
+                .map(UploadUtil.checkIfComplete(partInfo))
+                .get();
+
         return "Uploading...";
     }
 

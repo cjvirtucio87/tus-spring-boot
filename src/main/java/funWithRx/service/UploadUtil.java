@@ -1,7 +1,6 @@
 package funWithRx.service;
 
 import org.apache.log4j.Logger;
-import org.springframework.cglib.core.internal.Function;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +8,7 @@ import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.util.function.Function;
 
 import static java.io.File.separator;
 
@@ -19,32 +19,38 @@ import static java.io.File.separator;
 public class UploadUtil {
     private static final Logger log = Logger.getLogger(UploadUtil.class);
 
-    public static Long writeFilePart(PartInfo partInfo) throws Exception {
-        String filePath = createFilePath(partInfo);
-        log.info("Opening channels for file, " + filePath);
-        RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
-        ReadableByteChannel is = UploadUtil.getByteChannel(raf.getFilePointer(), partInfo);
-        FileChannel os = raf.getChannel();
-
+    public static Long writeFilePart(PartInfo partInfo) {
         try {
-            log.info("Writing file, " + filePath);
-            Long bytesToTransfer = partInfo.getUploadLength() - raf.getFilePointer();
-            if (bytesToTransfer > 0) {
-                os.transferFrom(is, raf.getFilePointer(), bytesToTransfer);
+            String filePath = createFilePath(partInfo);
+            log.info("Opening channels for file, " + filePath);
+            RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
+            ReadableByteChannel is = UploadUtil.getByteChannel(raf.getFilePointer(), partInfo);
+            FileChannel os = raf.getChannel();
+
+            try {
+                log.info("Writing file, " + filePath);
+                Long bytesToTransfer = partInfo.getUploadLength() - raf.getFilePointer();
+                if (bytesToTransfer > 0) {
+                    os.transferFrom(is, raf.getFilePointer(), bytesToTransfer);
+                }
+            } catch (IOException e) {
+                log.error("Error writing file, " + filePath);
+                log.error("Error", e);
+            } finally {
+                log.info("Closing channels for, " + filePath);
+                is.close();
+                raf.close();
             }
-        } catch (IOException e) {
-            log.error("Error writing file, " + filePath);
-            log.error("Error", e);
-        } finally {
-            log.info("Error writing file, " + filePath);
-            is.close();
-            raf.close();
+
+            return raf.getFilePointer();
+        } catch (Exception e) {
+            log.error("Error, ", e);
         }
 
-        return raf.getFilePointer();
+        return null;
     }
 
-    public static Function checkIfComplete(PartInfo partInfo) {
+    public static Function<Long, Boolean> checkIfComplete(PartInfo partInfo) {
         return filePointer -> filePointer == partInfo.getUploadLength();
     }
 

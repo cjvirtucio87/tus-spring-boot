@@ -12,19 +12,19 @@ public class PartInfo {
     @Getter Long partNumber;
     @Getter Long uploadLength;
     @Getter String userName;
-//    @Getter InputStream inputStream;
+    @Getter InputStream inputStream;
 
     public PartInfo(
             String fileName,
             Long partNumber,
             Long uploadLength,
-            String userName
-//            InputStream inputStream
+            String userName,
+            InputStream inputStream
     ) {
         this.fileName = fileName;
         this.partNumber = partNumber;
         this.uploadLength = uploadLength;
         this.userName = userName;
-//        this.inputStream = inputStream;
+        this.inputStream = inputStream;
     }
 }
