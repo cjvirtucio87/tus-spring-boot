@@ -17,11 +17,6 @@ import java.util.Optional;
 @Controller
 @EnableAutoConfiguration
 public class UploadController {
-    @GetMapping("/")
-    @ResponseBody
-    String home() {
-        return "index";
-    }
 
     @RequestMapping(value="/upload", method=RequestMethod.HEAD)
     @ResponseBody
