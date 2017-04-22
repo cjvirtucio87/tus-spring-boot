@@ -3,15 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "react-scripts": "0.9.5"
+    "@types/react": "^15.0.22",
+    "react-scripts": "0.9.5",
+    "tsx": "^1.0.0"
   },
   "dependencies": {
+    "axios": "^0.16.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "tsc && react-scripts start",
+    "build": "tsc && react-scripts build && ./moveBuild.js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
