@@ -2,19 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="856a938b-586c-4858-9307-95cd9961e925" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/client/src/App.test.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/funWithRx/App.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/funWithRx/Constants.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/funWithRx/UploadController.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/funWithRx/service/PartInfo.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/funWithRx/service/UploadUtil.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/static/index.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/client/src/UploadProgress.tsx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/client/src/Uploader.tsx" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/client/src/Uploader.tsx" afterPath="$PROJECT_DIR$/src/client/src/Uploader.tsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/funWithRx/UploadController.java" afterPath="$PROJECT_DIR$/src/main/java/funWithRx/UploadController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/funWithRx/service/UploadUtil.java" afterPath="$PROJECT_DIR$/src/main/java/funWithRx/service/UploadUtil.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/client/package.json" afterPath="$PROJECT_DIR$/src/client/package.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/client/src/App.tsx" afterPath="$PROJECT_DIR$/src/client/src/App.tsx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/client/src/index.tsx" afterPath="$PROJECT_DIR$/src/client/src/index.tsx" />
     </list>
     <ignored path="$PROJECT_DIR$/../out/" />
     <ignored path="$PROJECT_DIR$/../target/" />
@@ -42,8 +35,8 @@
       <file leaf-file-name="UploadController.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/funWithRx/UploadController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+            <state relative-caret-position="279">
+              <caret line="49" column="23" lean-forward="false" selection-start-line="49" selection-start-column="23" selection-end-line="49" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -803,8 +796,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/funWithRx/UploadController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+        <state relative-caret-position="279">
+          <caret line="49" column="23" lean-forward="false" selection-start-line="49" selection-start-column="23" selection-end-line="49" selection-end-column="23" />
           <folding />
         </state>
       </provider>

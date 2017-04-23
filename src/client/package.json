@@ -11,7 +11,9 @@
   "dependencies": {
     "axios": "^0.16.1",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.4",
+    "redux": "^3.6.0"
   },
   "scripts": {
     "start": "tsc && react-scripts start",
