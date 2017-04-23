@@ -4,6 +4,7 @@
   "private": true,
   "devDependencies": {
     "@types/react": "^15.0.22",
+    "immutability-helper": "^2.1.2",
     "react-scripts": "0.9.5",
     "tsx": "^1.0.0"
   },

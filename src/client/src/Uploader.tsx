@@ -1,22 +1,38 @@
 import * as React from 'react';
 import * as axios from 'axios';
+import * as update from 'immutability-helper';
 
-class Uploader extends React.Component<{}, {}> {
+interface IUploaderProps {
+
+}
+
+interface IUploaderState {
+  file: any
+}
+
+class Uploader extends React.Component<IUploaderProps, IUploaderState> {
   constructor(props) {
     super(props);
+    this.state = { file: null };
 
     this.onFileInput = this.onFileInput.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    console.log('firing');
+  componentWillUpdate(nextProps, nextState) {
+    console.log('Component Will Update');
+    console.log(nextState);
+  }
+
+  onFileUpload(event) {
+    console.log(`Uploading file: `);
+    // console.log(this.state.file);
   }
 
   onFileInput(event) {
     const { state } = this;
     const reader = new FileReader();
     const file = event.target.files[0];
-    const newState = { ...state, ...file };
+    const newState = update(state, { file: { $set: file }});
     const onLoadEnd = () => this.setState(newState);
 
     reader.onloadend = onLoadEnd;
@@ -26,11 +42,9 @@ class Uploader extends React.Component<{}, {}> {
   render() {
     return (
       <div className='Uploader'>
-        <form>
-          <label htmlFor='fileUploader'>File Uploader</label>
-          <input id='fileUploader' type='file' onChange={ this.onFileInput } /><br/>
-          <button type='submit'>Upload</button>
-        </form>
+        <label htmlFor='fileUploader'>File Uploader</label>
+        <input id='fileUploader' type='file' onChange={ this.onFileInput } /><br/>
+        <button type='button' onClick={ this.onFileUpload }>Upload</button>
       </div>
     )
   }
