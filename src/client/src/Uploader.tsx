@@ -1,31 +1,45 @@
 import * as React from 'react';
-import * as axios from 'axios';
+import axios from 'axios';
 import * as update from 'immutability-helper';
+import UploadProgress from './UploadProgress';
 
 interface IUploaderProps {
 
 }
 
 interface IUploaderState {
-  file: any
+  file: any,
+  progress: number
 }
 
 class Uploader extends React.Component<IUploaderProps, IUploaderState> {
   constructor(props) {
     super(props);
-    this.state = { file: null };
+    this.state = { file: null, progress: 0 };
 
     this.onFileInput = this.onFileInput.bind(this);
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    console.log('Component Will Update');
-    console.log(nextState);
+    this.onFileUpload = this.onFileUpload.bind(this);
   }
 
   onFileUpload(event) {
-    console.log(`Uploading file: `);
-    // console.log(this.state.file);
+    const { state } = this;
+    const self = this;
+
+    axios.patch(`http://localhost:8080/upload/${state.file.name.slice(0, state.file.name.length-4)}`, state.file, {
+      headers: {
+        'content-type': 'text/plain',
+        fileName: state.file.name.slice(0, state.file.name.length-4),
+        partNumber: 1,
+        uploadLength: state.file.size,
+        userName: 'cjvirtucio'
+      },
+      onUploadProgress(ev) {
+        const progress = Math.floor((ev.loaded / state.file.size) * 100);
+        const newState = update(state, { progress: { $set: progress }});
+
+        self.setState(newState);
+      }
+    }).catch(err => console.log(err));
   }
 
   onFileInput(event) {
@@ -44,7 +58,8 @@ class Uploader extends React.Component<IUploaderProps, IUploaderState> {
       <div className='Uploader'>
         <label htmlFor='fileUploader'>File Uploader</label>
         <input id='fileUploader' type='file' onChange={ this.onFileInput } /><br/>
-        <button type='button' onClick={ this.onFileUpload }>Upload</button>
+        <button type='button' onClick={ this.onFileUpload }>Upload</button><br/>
+        <UploadProgress progress={ this.state.progress } />
       </div>
     )
   }

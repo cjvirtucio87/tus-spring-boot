@@ -32,13 +32,14 @@ public class UploadController {
         return "Creating an upload.";
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PatchMapping("/upload/{id}")
     @ResponseBody
     String updateUpload(
-            String fileName,
-            Long partNumber,
-            Long uploadLength,
-            String userName,
+            @RequestHeader(name="fileName") String fileName,
+            @RequestHeader(name="partNumber") Long partNumber,
+            @RequestHeader(name="uploadLength") Long uploadLength,
+            @RequestHeader(name="userName") String userName,
             InputStream inputStream
     ) {
         PartInfo partInfo = new PartInfo(fileName, partNumber, uploadLength, userName, inputStream);

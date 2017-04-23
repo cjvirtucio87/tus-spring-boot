@@ -26,6 +26,7 @@ public class UploadUtil {
             RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
             ReadableByteChannel is = UploadUtil.getByteChannel(raf.getFilePointer(), partInfo);
             FileChannel os = raf.getChannel();
+            Long newOffset = 0L;
 
             try {
                 log.info("Writing file, " + filePath);
@@ -38,11 +39,12 @@ public class UploadUtil {
                 log.error("Error", e);
             } finally {
                 log.info("Closing channels for, " + filePath);
+                newOffset = raf.getFilePointer();
                 is.close();
                 raf.close();
             }
 
-            return raf.getFilePointer();
+            return newOffset;
         } catch (Exception e) {
             log.error("Error, ", e);
         }
@@ -63,7 +65,7 @@ public class UploadUtil {
      * @return the file path for the part to be written
      */
     private static String createFilePath(PartInfo partInfo) {
-        String path = System.getProperty("java.io.tmpdir") + separator + partInfo.getFileName() + "_" + partInfo.getPartNumber();
+        String path = System.getProperty("java.io.tmpdir") + partInfo.getFileName() + "_" + partInfo.getPartNumber();
         String message = "Creating file part, " + path;
         log.info(message);
         return path;
