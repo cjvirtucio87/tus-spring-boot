@@ -10,7 +10,7 @@ export const uploadFile = (file) => ({
   file
 });
 
-export const updateProgress = (progress) => ({
+export const updateProgress = (progressParams) => ({
   type: 'UPDATE_PROGRESS',
-  progress
+  progressParams
 });

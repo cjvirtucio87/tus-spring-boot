@@ -18,7 +18,8 @@ export const file = (state = {}, action) => {
       };
     case 'UPDATE_PROGRESS':
       return {
-        progress: action.progress
+        ...state,
+        progressParams: action.progressParams
       };
     default:
       return state;

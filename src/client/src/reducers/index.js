@@ -16,9 +16,7 @@ exports.file = function (state, action) {
         case 'UPLOAD_FILE':
             return __assign({}, state, { file: action.file });
         case 'UPDATE_PROGRESS':
-            return {
-                progress: action.progress
-            };
+            return __assign({}, state, { progressParams: action.progressParams });
         default:
             return state;
     }

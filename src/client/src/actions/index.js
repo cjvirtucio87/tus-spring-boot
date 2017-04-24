@@ -8,8 +8,8 @@ exports.uploadFile = function (file) { return ({
     type: 'UPLOAD_FILE',
     file: file
 }); };
-exports.updateProgress = function (progress) { return ({
+exports.updateProgress = function (progressParams) { return ({
     type: 'UPDATE_PROGRESS',
-    progress: progress
+    progressParams: progressParams
 }); };
 //# sourceMappingURL=index.js.map

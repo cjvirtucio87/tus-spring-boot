@@ -6,7 +6,7 @@ import axios from 'axios';
 const Uploader = ({ onAddFile, onUploadFile, file }) => {
   return (
     <div className='Uploader'>
-        <p>{ file ? file.name : "" }</p>
+        <p>File Name: { file ? file.name : "" }</p>
 
         <label htmlFor='fileUploader'>File Uploader</label>
         <input id='fileUploader' type='file' onChange={ onAddFile } /><br/>
