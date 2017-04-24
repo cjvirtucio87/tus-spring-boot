@@ -1,4 +1,4 @@
-package funWithRx;
+package ReactMember;
 
 /**
  * Created by cvirtucio on 4/19/2017.

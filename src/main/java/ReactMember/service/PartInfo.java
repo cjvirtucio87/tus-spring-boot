@@ -1,4 +1,4 @@
-package funWithRx.service;
+package ReactMember.service;
 
 import lombok.Getter;
 

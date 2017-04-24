@@ -1,4 +1,4 @@
-package funWithRx.service;
+package ReactMember.service;
 
 import org.apache.log4j.Logger;
 
@@ -9,8 +9,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.util.function.Function;
-
-import static java.io.File.separator;
 
 /**
  * Created by cvirtucio on 4/20/2017.

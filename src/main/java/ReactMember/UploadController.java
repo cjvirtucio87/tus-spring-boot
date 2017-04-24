@@ -1,14 +1,10 @@
-package funWithRx;
+package ReactMember;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.core.JsonFactory;
-import funWithRx.service.PartInfo;
-import funWithRx.service.UploadUtil;
+import ReactMember.service.PartInfo;
+import ReactMember.service.UploadUtil;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import rx.Observable;
-import rx.observables.StringObservable;
 
 import java.io.InputStream;
 import java.util.Optional;
