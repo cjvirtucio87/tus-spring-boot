@@ -19,17 +19,19 @@ const { Uploader, UploadProgress } = presentational;
 
 // Math
 const computeProgress = (loaded, fileSize) => Math.floor((loaded / fileSize) * 100);
-const computeSpeed = (loaded, startTime) => Math.floor(loaded / parseInt(moment().subtract(startTime).format('SS')));
+const computeElapsedTime = (unit) => (startTime) => moment().diff(startTime, unit) || 1;
+const computeElapsedSeconds = computeElapsedTime('seconds');
+const computeSpeed = (loaded, startTime) => Math.floor(loaded / computeElapsedSeconds(startTime));
 
 // Dispatchers
 const onUploadFile = dispatch => (file) => {
-  const startTime = parseInt(moment().format('SS'));
+  const startTime = moment();
+  const fileName = /^(.+)\..*/.exec(file.name)[1];
 
-  // TODO: generalized fileName getter
-  axios.patch(`http://localhost:8080/upload/${file.name.slice(0, file.name.length-4)}`, file, {
+  axios.patch(`http://localhost:8080/upload/${fileName}`, file, {
     headers: {
       'content-type': 'text/plain',
-      fileName: file.name.slice(0, file.name.length-4),
+      fileName,
       partNumber: 1,
       uploadLength: file.size,
       userName: 'cjvirtucio'

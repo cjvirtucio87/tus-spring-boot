@@ -8,10 +8,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="funWithRx" />
+        <module name="ReactMember" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
       <module name="funWithRx" target="1.8" />
+      <module name="ReactMember" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
