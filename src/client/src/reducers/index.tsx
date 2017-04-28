@@ -1,7 +1,7 @@
 /* 
   Reducers are handlers that deal with the messages(actions).
 
-  You can merge multiplate reducers using the combineReducers function.
+  You can merge multiple reducers using the combineReducers function.
 */
 
 export const file = (state = {}, action) => {
