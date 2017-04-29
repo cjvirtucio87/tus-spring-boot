@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const UploadProgress = ({ progressParams }) => {
+const UploadProgress = ({ parts, progressParams }) => {
   const { progress, speed } = progressParams ? progressParams : { progress: 0, speed: 0 };
 
   return (

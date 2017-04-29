@@ -9,12 +9,12 @@ export const file = (state = {}, action) => {
     case 'ADD_FILE':
       return {
         ...state,
-        file: action.file
+        parts: action.parts
       };
-    case 'UPLOAD_FILE':
+    case 'UPLOAD_PART':
       return {
         ...state,
-        file: action.file
+        part: action.part
       };
     case 'UPDATE_PROGRESS':
       return {

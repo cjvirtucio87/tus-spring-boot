@@ -4,14 +4,14 @@
   Note the syntax regarding the payload: { file } and { progressParams } are synctatic sugar for { file: file } and { progressParams: progressParams } (ES6 feature).
 */
 
-export const addFile = (file) => ({
+export const addFile = (parts) => ({
   type: 'ADD_FILE',
-  file
+  parts
 });
 
-export const uploadFile = (file) => ({
-  type: 'UPLOAD_FILE',
-  file
+export const uploadPart = (part) => ({
+  type: 'UPLOAD_PART',
+  part
 });
 
 export const updateProgress = (progressParams) => ({

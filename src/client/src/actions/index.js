@@ -1,15 +1,15 @@
 "use strict";
-exports.__esModule = true;
-exports.addFile = function (file) { return ({
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.addFile = (parts) => ({
     type: 'ADD_FILE',
-    file: file
-}); };
-exports.uploadFile = function (file) { return ({
-    type: 'UPLOAD_FILE',
-    file: file
-}); };
-exports.updateProgress = function (progressParams) { return ({
+    parts
+});
+exports.uploadPart = (part) => ({
+    type: 'UPLOAD_PART',
+    part
+});
+exports.updateProgress = (progressParams) => ({
     type: 'UPDATE_PROGRESS',
-    progressParams: progressParams
-}); };
+    progressParams
+});
 //# sourceMappingURL=index.js.map

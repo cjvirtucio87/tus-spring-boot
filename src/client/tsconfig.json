@@ -5,6 +5,7 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "jsx": "react"
+        "jsx": "react",
+        "target": "es6"
     }
 }

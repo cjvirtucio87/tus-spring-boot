@@ -8,7 +8,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 
-import { addFile, uploadFile, updateProgress } from '../actions';
+import { PART_SIZE } from '../constants';
+import { addFile } from '../actions';
 
 import presentational from '../presentational/';
 
@@ -24,32 +25,51 @@ const computeElapsedSeconds = computeElapsedTime('seconds');
 const computeSpeed = (loaded, startTime) => Math.floor(loaded / computeElapsedSeconds(startTime));
 
 // Dispatchers
-const onUploadFile = dispatch => (file) => {
-  const startTime = moment();
-  const fileName = /^(.+)\..*/.exec(file.name)[1];
+// const onUploadFile = dispatch => (file) => {
+//   const startTime = moment();
+//   const fileName = /^(.+)\..*/.exec(file.name)[1];
 
-  axios.patch(`http://localhost:8080/upload/${fileName}`, file, {
-    headers: {
-      'content-type': 'text/plain',
-      fileName,
-      partNumber: 1,
-      uploadLength: file.size,
-      userName: 'cjvirtucio'
-    },
-    onUploadProgress(ev) {
-      const progress = computeProgress(ev.loaded, file.size);
-      const speed = computeSpeed(ev.loaded, startTime);
+//   axios.patch(`http://localhost:8080/upload/${fileName}`, file, {
+//     headers: {
+//       'content-type': 'text/plain',
+//       fileName,
+//       partNumber: 1,
+//       uploadLength: file.size,
+//       userName: 'cjvirtucio'
+//     },
+//     onUploadProgress(ev) {
+//       const progress = computeProgress(ev.loaded, file.size);
+//       const speed = computeSpeed(ev.loaded, startTime);
 
-      dispatch(updateProgress({ progress, speed }));
-      if (progress === 100) dispatch(uploadFile(file));
-    }
-  }).catch(err => console.log(err));
+//       dispatch(updateProgress({ progress, speed }));
+//       if (progress === 100) dispatch(uploadFile(file));
+//     }
+//   }).catch(err => console.log(err));
+// }
+
+const capAtFilesize = (value, fileSize) => value > fileSize ? fileSize : value;
+
+const createFileParts = (file, uploadOffset, uploadLength, partCount, parts) => {
+  if (uploadOffset >= file.size) return parts;
+  parts.push({
+    file: file.slice(uploadOffset, uploadLength + 1), 
+    partNum: partCount,
+    uploadOffset: capAtFilesize(uploadOffset, file.size),
+    uploadLength: capAtFilesize(uploadLength, file.size)
+  });
+  return createFileParts(file, uploadOffset + PART_SIZE , uploadLength + PART_SIZE, partCount + 1, parts);
+}
+
+const onLoadEnd = (dispatch, file) => () => {
+  const parts = createFileParts(file, 0, PART_SIZE, 0, []);
+  console.log(parts);
+  dispatch(addFile(parts));
 }
 
 const onAddFile = dispatch => (event) => {
   const reader = new FileReader();
   const file = event.target.files[0];
-  reader.onloadend = () => dispatch(addFile(file));
+  reader.onloadend = onLoadEnd(dispatch, file);
   reader.readAsDataURL(file);
 }
 
@@ -61,17 +81,20 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onAddFile: onAddFile(dispatch),
-  onUploadFile: onUploadFile(dispatch)
+  // onUploadFile: onUploadFile(dispatch)
 });
 
-const Dashboard = ({ onAddFile, onUploadFile, file, progressParams }) => (
+const Dashboard = ({ onAddFile, parts, progressParams }) => (
+  /*onUploadFile={ onUploadFile }*/
+
   <div className='Dashboard'>
     <Uploader
       onAddFile={ onAddFile }
-      onUploadFile={ onUploadFile }
-      file={ file }
+
+      parts={ parts }
     />
     <UploadProgress
+      parts={ parts } 
       progressParams={ progressParams }
     />
   </div>
