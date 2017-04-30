@@ -6,8 +6,10 @@ src/client/node_modules
 .settings/
 npm-debug.log
 src/client/build/
-src/client/src/*.js
-src/client/src/*.js.map
+
+# recursively traverse the file tree from src/ and pattern match *.js
+src/client/src/**/*.js
+src/client/src/**/*.js.map
 src/main/resources/static/css/
 src/main/resources/static/js/
-target/*
+target/**/*
