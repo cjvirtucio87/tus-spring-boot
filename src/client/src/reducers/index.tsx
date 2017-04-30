@@ -8,8 +8,8 @@ import * as update from 'immutability-helper';
 
 const updateRecord = (state, progressParams) => {
   const { partNumber, progress, speed } = progressParams;
-  const progressData =  update(state.progressData, { [partNumber]: { $set: { progress, speed } } });
-  console.log(progressData);
+  const progressData =  update(state.progressData, { [partNumber]: { $set: { partNumber, progress, speed } } });
+  
   return update(state, { progressData: { $set: progressData } });
 }
 
