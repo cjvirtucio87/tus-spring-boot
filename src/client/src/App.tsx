@@ -1,6 +1,5 @@
 import * as React from 'react';
 import container from './container';
-import './App.css';
 
 const { Dashboard } = container;
 
