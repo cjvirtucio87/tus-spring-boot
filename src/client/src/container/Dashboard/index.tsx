@@ -45,8 +45,6 @@ const createFileParts = (file, fileName, uploadOffset, uploadLength, partNumber,
 const onLoadEnd = (dispatch, file) => () => {
   const fileName = /^(.+)\..*/.exec(file.name)[1];
   const parts = createFileParts(file, fileName, 0, PART_SIZE, 0, []);
-  console.log(`Created file parts for file, ${file.name}`);
-  console.log(parts);
   dispatch(addFile(parts));
 }
 
@@ -81,6 +79,8 @@ const uploadPart = dispatch => startTime => part => {
 const onUploadFile = dispatch => parts => event => {
   const startTime = moment();
 
+  console.log('Uploading.');
+
   Rx.Observable.from(parts)
     .subscribe(uploadPart(dispatch)(startTime));
 }
@@ -97,7 +97,7 @@ const mapDispatchToProps = (dispatch) => ({
   onUploadFile: onUploadFile(dispatch)
 });
 
-const Dashboard = ({ onAddFile, parts, progressData }) => (
+const Dashboard = ({ onAddFile, onUploadFile, parts, progressData }) => (
   <div className='Dashboard container-fluid'>
     <section className='row align-items-center justify-content-center'>
       <div className='col-4'>
