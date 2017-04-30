@@ -1,0 +1,9 @@
+body {
+  background-color: black; }
+
+div.Dashboard.container-fluid section.row {
+  color: white;
+  height: 100vh;
+  font-size: 3em; }
+  div.Dashboard.container-fluid section.row div.col-4 .PartInProgress {
+    font-size: 0.25em; }
