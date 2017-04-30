@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { find } from 'lodash';
 
-const PartInProgress = ({ part, partProgress }) => (
+const PartInProgress = ({ part, progress, speed }) => (
   <tr className='PartInProgress'>
-    <td>Filename: { `${part.fileName}_${part.partNumber}` }</td>
-    <td>Uploaded: { partProgress }</td>
+    <td>{ `${part.fileName}_${part.partNumber}` }</td>
+    <td>{ progress ? progress : 0 }%</td>
+    <td>{ speed ? speed : 0 } bytes/sec</td>
   </tr>
 );
 
