@@ -3,13 +3,15 @@ import { find } from 'lodash';
 import PartInProgress from '../PartInProgress';
 
 const onMap = progressData => part => {
-  const partProgress = find(progressData, record => record.partNumber === part.partNumber);
+  const partProgress = progressData[part.partNumber];
+  const { progress, speed } = partProgress ? partProgress : { progress: 0, speed: 0 };
 
   return (
     <PartInProgress 
     key={ part.partNumber }
     part={ part }
-    partProgress={ partProgress }
+    progress={ progress }
+    speed={ speed }
     />
   );
 }
@@ -23,6 +25,7 @@ const UploadProgress = ({ parts, progressData }) => {
         <tr>
           <th>Filename</th>
           <th>Progress</th>
+          <th>Speed</th>
         </tr>
       </thead>
       <tbody>
