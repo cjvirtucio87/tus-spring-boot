@@ -11,10 +11,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.io.File.separator;
 
@@ -47,7 +44,10 @@ public class UploadUtil {
     }
 
     public static String createDirectory(String fileName) {
-        Path path = Paths.get(System.getProperty("java.io.tmpdir") + separator + fileName);
+        Path path = Paths.get(
+                System.getProperty("java.io.tmpdir"),
+                fileName
+        );
         try {
             Files.createDirectory(path);
             log.info("Created file directory, " + path.toString());
@@ -58,37 +58,11 @@ public class UploadUtil {
         }
     }
 
-    public static Function<String, List<Long>> getFilePointerList(List<Long> partNumbers) {
-        return fileName -> partNumbers.stream()
-                    .map(num -> {
-                        String filePath = System.getProperty("java.io.tmpdir") + fileName + separator + fileName + "_" + num.toString();
-                        RandomAccessFile raf = null;
-                        Long filePointer = 0L;
-
-                        try {
-                            raf = new RandomAccessFile(filePath, "r");
-                            filePointer = raf.getFilePointer();
-                        } catch (Exception e) {
-                            log.error("Error attempting to read file, " + filePath);
-                        } finally {
-                            try {
-                                raf.close();
-                            } catch (Exception e) {
-                                log.error("Error attempting to close RandomAccessFile for file, " + filePath);
-                            }
-                        }
-
-                        return filePointer;
-                    })
-                    .collect(Collectors.toList());
-    }
-
     public static Boolean checkIfExists(String fileName) {
         Path path = Paths.get(System.getProperty("java.io.tmpdir") + separator + fileName);
         return Files.exists(path);
     }
 
-    // TODO: writeFilePart stops halfway through; fix it
     public static Long writeFilePart(PartInfo partInfo) {
         String filePath = createFilePath(partInfo);
         Long currentOffset = 0L;
@@ -130,7 +104,6 @@ public class UploadUtil {
     }
 
     public static Predicate<Long> checkIfComplete(PartInfo partInfo) {
-        // TODO: fix this filter
         return filePointer -> filePointer == (partInfo.getUploadLength() - partInfo.getUploadOffset());
     }
 
@@ -144,9 +117,12 @@ public class UploadUtil {
      * @return the file path for the part to be written
      */
     private static String createFilePath(PartInfo partInfo) {
-        String path = System.getProperty("java.io.tmpdir") + separator + partInfo.getFileName()  + separator + partInfo.getFileName() + "_" + partInfo.getPartNumber();
-        String message = "Creating file part, " + path;
-        log.info(message);
+        String path = Paths.get(
+                System.getProperty("java.io.tmpdir"),
+                partInfo.getFileName(),
+                partInfo.getFileName() + "_" + partInfo.getPartNumber()
+        ).toString();
+        log.info("Creating file part, " + path);
         return path;
     }
 
