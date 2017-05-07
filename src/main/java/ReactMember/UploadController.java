@@ -2,6 +2,7 @@ package ReactMember;
 
 import ReactMember.service.PartInfo;
 import ReactMember.service.UploadUtil;
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpHeaders;
@@ -26,9 +27,8 @@ import java.util.stream.Collectors;
 public class UploadController {
     private static final Logger log = Logger.getLogger(UploadController.class);
 
-    @RequestMapping(value="/upload", method=RequestMethod.HEAD)
-    @ResponseBody
-    ResponseEntity checkUpload(
+    @GetMapping("/upload")
+    public ResponseEntity readUpload(
             @RequestHeader(name="fileName") String fileName,
             @RequestHeader(name="partNumbers") List<Long> partNumbers
     ) {
@@ -44,8 +44,7 @@ public class UploadController {
     }
 
     @PostMapping("/upload")
-    @ResponseBody
-    ResponseEntity createUpload(
+    public ResponseEntity createUpload(
             @RequestHeader(name="fileName") String fileName
     ) {
         return Optional.of(fileName)
@@ -54,29 +53,8 @@ public class UploadController {
                 .get();
     }
 
-    @GetMapping("/upload/{id}")
-    @ResponseBody
-    ResponseEntity readUpload(
-            @RequestHeader(name="fileName") String fileName,
-            @RequestHeader(name="partNumber") Long partNumber,
-            @RequestHeader(name="userName") String userName
-    ) {
-        PartInfo partInfo = PartInfo.builder()
-                .fileName(fileName)
-                .partNumber(partNumber)
-                .userName(userName)
-                .build();
-
-        return Optional.of(partInfo)
-                .map(UploadUtil::getFilePointer)
-                .map(this::onRead)
-                .get();
-    }
-
-
     @PatchMapping("/upload/{id}")
-    @ResponseBody
-    ResponseEntity updateUpload(
+    public ResponseEntity updateUpload(
             @RequestHeader(name="fileName") String fileName,
             @RequestHeader(name="partNumber") Long partNumber,
             @RequestHeader(name="uploadOffset") Long uploadOffset,
@@ -102,8 +80,7 @@ public class UploadController {
     }
 
     @PostMapping("/upload/complete")
-    @ResponseBody
-    ResponseEntity completeUpload(
+    public ResponseEntity completeUpload(
             @RequestHeader(name="fileName") String fileName,
             @RequestHeader(name="partNumbers") List<Long> partNumbers,
             @RequestHeader(name="fileSize") Long fileSize
@@ -119,8 +96,7 @@ public class UploadController {
     }
 
     @RequestMapping(value="/destroy", method=RequestMethod.DELETE)
-    @ResponseBody
-    String destroyUpload() {
+    public String destroyUpload() {
         return "Destroying upload.";
     }
 
@@ -138,68 +114,32 @@ public class UploadController {
                 .build();
     }
 
-    private ResponseEntity onRead(Long filePointer) {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("filePointer", filePointer.toString());
-        return new ResponseEntity<>(
-                "",
-                responseHeaders,
-                HttpStatus.OK
-        );
-    }
-
     private ResponseEntity onCreateDir(String fileDir) {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("fileDir", fileDir);
-        return new ResponseEntity<>(
-                "",
-                responseHeaders,
-                HttpStatus.CREATED
-        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header("fileDir", fileDir)
+                .build();
     }
 
     private ResponseEntity onExists(List<Long> filePointerList) {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        return new ResponseEntity<>(
-                filePointerList,
-                responseHeaders,
-                HttpStatus.OK
-        );
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(filePointerList);
     }
 
     private Supplier<ResponseEntity> onNotExist(String fileName) {
-        return () -> {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.set("fileName", fileName);
-            return new ResponseEntity<>(
-                    "No upload has been created for file, " + fileName + ", yet.",
-                    responseHeaders,
-                    HttpStatus.BAD_REQUEST
-            );
-        };
+        return () -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .header("fileName", fileName)
+                .body("No upload has been created for file, " + fileName + ", yet.");
     }
 
     private Function<Long, ResponseEntity> onComplete(PartInfo partInfo) {
-        return newOffset -> {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.set("partNumber", partInfo.getPartNumber().toString());
-            return new ResponseEntity<>(
-                    "",
-                    responseHeaders,
-                    HttpStatus.CREATED
-            );
-        };
+        return newOffset -> ResponseEntity.status(HttpStatus.CREATED)
+                .header("partNumber", partInfo.getPartNumber().toString())
+                .build();
     }
 
     private Supplier<ResponseEntity> onInterrupt(PartInfo partInfo) {
-        return () -> {
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.set("partNumber", partInfo.getPartNumber().toString());
-            return new ResponseEntity<>(
-                    "",
-                    responseHeaders,
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
-        };
+        return () -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .header("partNumber", partInfo.getPartNumber().toString())
+                .build();
     }
 }
