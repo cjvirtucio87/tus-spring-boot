@@ -18,3 +18,11 @@ export const updateProgress = (progressParams) => ({
   type: 'UPDATE_PROGRESS',
   progressParams
 });
+
+export const finishUpload = () => ({
+  type: 'UPLOAD_DONE'
+})
+
+export const toggleChunkMode = () => ({
+  type: 'TOGGLE_CHUNK_MODE'
+});

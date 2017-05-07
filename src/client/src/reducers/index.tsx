@@ -13,7 +13,7 @@ const updateRecord = (state, progressParams) => {
   return update(state, { progressData: { $set: progressData } });
 }
 
-export const file = (state = { progressData: {} }, action) => {
+export const file = (state = { progressData: {}, chunked: true }, action) => {
   switch (action.type) {
     case 'ADD_FILE':
       return {
@@ -27,6 +27,16 @@ export const file = (state = { progressData: {} }, action) => {
       };
     case 'UPDATE_PROGRESS':
       return updateRecord(state, action.progressParams);
+    case 'UPLOAD_DONE':
+      return {
+        ...state,
+        uploadDone: true
+      };
+    case 'TOGGLE_CHUNK_MODE':
+      return {
+        ...state,
+        chunked: !state.chunked
+      }
     default:
       return state;
   }
