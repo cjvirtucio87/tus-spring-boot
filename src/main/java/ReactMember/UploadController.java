@@ -2,7 +2,6 @@ package ReactMember;
 
 import ReactMember.service.PartInfo;
 import ReactMember.service.UploadUtil;
-import org.apache.catalina.connector.Response;
 import org.apache.log4j.Logger;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Created by cvirtucio on 4/18/2017.
@@ -32,10 +32,13 @@ public class UploadController {
             @RequestHeader(name="fileName") String fileName,
             @RequestHeader(name="partNumbers") List<Long> partNumbers
     ) {
+        List<PartInfo> partInfoList = partNumbers.stream()
+                .map(num -> PartInfo.builder().fileName(fileName).partNumber(num).build())
+                .collect(Collectors.toList());
 
         return Optional.of(fileName)
                 .filter(UploadUtil::checkIfExists)
-                .map(UploadUtil.getFilePointerList(partNumbers))
+                .map(name -> partInfoList.stream().map(UploadUtil::getFilePointer).collect(Collectors.toList()))
                 .map(this::onExists)
                 .orElseGet(onNotExist(fileName));
     }
@@ -58,7 +61,11 @@ public class UploadController {
             @RequestHeader(name="partNumber") Long partNumber,
             @RequestHeader(name="userName") String userName
     ) {
-        PartInfo partInfo = new PartInfo(fileName, partNumber, null, null, userName, null);
+        PartInfo partInfo = PartInfo.builder()
+                .fileName(fileName)
+                .partNumber(partNumber)
+                .userName(userName)
+                .build();
 
         return Optional.of(partInfo)
                 .map(UploadUtil::getFilePointer)
@@ -77,7 +84,15 @@ public class UploadController {
             @RequestHeader(name="userName") String userName,
             InputStream inputStream
     ) {
-        PartInfo partInfo = new PartInfo(fileName, partNumber, uploadOffset, uploadLength, userName, inputStream);
+        PartInfo partInfo = PartInfo
+                .builder()
+                .fileName(fileName)
+                .partNumber(partNumber)
+                .uploadOffset(uploadOffset)
+                .uploadLength(uploadLength)
+                .userName(userName)
+                .inputStream(inputStream)
+                .build();
 
         return Optional.of(partInfo)
                 .map(UploadUtil::writeFilePart)
@@ -86,10 +101,41 @@ public class UploadController {
                 .orElseGet(onInterrupt(partInfo));
     }
 
+    @PostMapping("/upload/complete")
+    @ResponseBody
+    ResponseEntity completeUpload(
+            @RequestHeader(name="fileName") String fileName,
+            @RequestHeader(name="partNumbers") List<Long> partNumbers,
+            @RequestHeader(name="fileSize") Long fileSize
+    ) {
+        List<PartInfo> partInfoList = partNumbers.stream()
+                .map(partNumber -> PartInfo.builder().fileName(fileName).partNumber(partNumber).fileSize(fileSize).build())
+                .collect(Collectors.toList());
+
+        return Optional.of(partInfoList)
+                .map(UploadUtil::concatenate)
+                .map(this::onConcatenate)
+                .orElseGet(this::onFailedConcatenate);
+    }
+
     @RequestMapping(value="/destroy", method=RequestMethod.DELETE)
     @ResponseBody
     String destroyUpload() {
         return "Destroying upload.";
+    }
+
+    private ResponseEntity onConcatenate(String fileName) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header("fileName", fileName)
+                .build();
+    }
+
+    private ResponseEntity onFailedConcatenate() {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .header("reason", "Failed to concatenate file.")
+                .build();
     }
 
     private ResponseEntity onRead(Long filePointer) {
