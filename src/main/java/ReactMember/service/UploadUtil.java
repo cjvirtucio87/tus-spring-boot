@@ -23,6 +23,7 @@ public class UploadUtil {
 
     public static Long getFilePointer(PartInfo partInfo) {
         String filePath = createFilePath(partInfo);
+        log.info("Retrieving pointer for file part, " + filePath);
         Long filePointer = 0L;
         RandomAccessFile raf = null;
 
@@ -58,7 +59,7 @@ public class UploadUtil {
     }
 
     public static Boolean checkIfExists(String fileName) {
-        Path path = Paths.get(System.getProperty("java.io.tmpdir") + separator + fileName);
+        Path path = Paths.get(System.getProperty("java.io.tmpdir"), fileName);
         return Files.exists(path);
     }
 
@@ -172,7 +173,6 @@ public class UploadUtil {
                 partInfo.getFileName(),
                 partInfo.getFileName() + "_" + partInfo.getPartNumber()
         ).toString();
-        log.info("Creating file part, " + path);
         return path;
     }
 
