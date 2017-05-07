@@ -15,6 +15,7 @@ public class PartInfo {
     @Getter Long partNumber;
     @Getter Long uploadOffset;
     @Getter Long uploadLength;
+    @Getter Long fileSize;
     @Getter String userName;
     @Getter InputStream inputStream;
 }
