@@ -25,12 +25,12 @@ const { Uploader, UploadProgress } = presentational;
 const computeProgress = (loaded, fileSize) => Math.floor((loaded / fileSize) * 100);
 const computeElapsedTime = (unit) => (startTime) => moment().diff(startTime, unit) || 1;
 const computeElapsedSeconds = computeElapsedTime('seconds');
-const computeSpeed = (loaded, startTime) => Math.floor(loaded / computeElapsedSeconds(startTime));
+const computeSpeed = (loaded, startTime) => Math.floor(loaded / ( computeElapsedSeconds(startTime) ));
 
 const capAtFilesize = (value, fileSize) => value > fileSize ? fileSize : value;
 
 const createFilePart = (file, fileName) => (
-  { 
+  {
     file, 
     fileName, 
     partNumber: 0, 
@@ -89,13 +89,16 @@ const onLoadEnd = dispatch => file => chunked => () => {
   const parts = chunked ? createFileParts(file, fileName, 0, PART_SIZE, 0, []) : [createFilePart(file, fileName)];
   const partNumbers = chunked ? parts.map(part => part.partNumber) : [0];
 
-  axios.head(`${BASE_URI}`, {
+  axios.get(`${BASE_URI}`, {
     headers: {
       fileName,
       partNumbers
     }
   })
-  .then(() => dispatch(onAddFile(parts)))
+  .then(resp => {
+    console.log(resp);
+    dispatch(addFile(parts));
+  })
   .catch(onFileNotExist(dispatch)(fileName)(parts));
 }
 
