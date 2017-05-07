@@ -9,7 +9,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { PART_SIZE, BASE_URI, FILENAME_PATTERN } from '../../constants';
-import { addFile, updateProgress } from '../../actions';
+import { addFile, updateProgress, finishUpload, toggleChunkMode } from '../../actions';
 
 import presentational from '../../presentational/';
 
@@ -29,28 +29,49 @@ const computeSpeed = (loaded, startTime) => Math.floor(loaded / computeElapsedSe
 
 const capAtFilesize = (value, fileSize) => value > fileSize ? fileSize : value;
 
+const createFilePart = (file, fileName) => (
+  { 
+    file, 
+    fileName, 
+    partNumber: 0, 
+    uploadOffset: 0, 
+    uploadLength: file.size,
+    fileSize: file.size
+  }
+);
+
 const createFileParts = (file, fileName, uploadOffset, uploadLength, partNumber, parts) => {
+  const fileSize = file.size;
   if (uploadOffset >= file.size) return parts;
 
-  // 0:2, 3:4, 5:6
-  // 0:2, 0:1, 0:1
-  // 2 bytes to be transferred; 1 byte to be transferred; 1 byte to be transferred;
-  // bytesToBeTransferred = (len - offset)
-  // upperBoundPart = bytesToBeTransferred
-  // lowerBoundPart = 0
-  // Therefore, we only transfer bytes when (bytesToBeTransferred - lowerBoundPart) > 0;
+  /*
+    0:2, 3:4, 5:6
+    0:2, 0:1, 0:1
+    2 bytes to be transferred; 1 byte to be transferred; 1 byte to be transferred;
+    bytesToBeTransferred = (len - offset)
+    upperBoundPart = bytesToBeTransferred
+    lowerBoundPart = 0
+    Therefore, we only transfer bytes when (bytesToBeTransferred - lowerBoundPart) > 0;
+  */
   
   parts.push({
     file: file.slice(uploadOffset, uploadLength + 1),
     fileName,
     partNumber,
-    uploadOffset: capAtFilesize(uploadOffset, file.size),
-    uploadLength: capAtFilesize(uploadLength, file.size)
+    uploadOffset: capAtFilesize(uploadOffset, fileSize),
+    uploadLength: capAtFilesize(uploadLength, fileSize),
+    fileSize
   });
-  return createFileParts(file, fileName, capAtFilesize(uploadOffset + PART_SIZE, file.size), capAtFilesize(uploadLength + PART_SIZE, file.size), partNumber + 1, parts);
+
+  return createFileParts(
+    file, 
+    fileName, 
+    capAtFilesize(uploadOffset + PART_SIZE, fileSize), 
+    capAtFilesize(uploadLength + PART_SIZE, fileSize), 
+    partNumber + 1, parts);
 }
 
-const onFileNotExist = (dispatch, fileName, parts) => () => {
+const onFileNotExist = dispatch => fileName => parts => () => {
   console.log(`File not found. Creating directory for file, ${fileName}`);
   axios.post(`${BASE_URI}`, null, {
     headers: {
@@ -63,10 +84,10 @@ const onFileNotExist = (dispatch, fileName, parts) => () => {
   });
 }
 
-const onLoadEnd = (dispatch, file) => () => {
+const onLoadEnd = dispatch => file => chunked => () => {
   const fileName = FILENAME_PATTERN.exec(file.name)[1];
-  const parts = createFileParts(file, fileName, 0, PART_SIZE, 0, []);
-  const partNumbers = parts.map(part => part.partNumber);  
+  const parts = chunked ? createFileParts(file, fileName, 0, PART_SIZE, 0, []) : [createFilePart(file, fileName)];
+  const partNumbers = chunked ? parts.map(part => part.partNumber) : [0];
 
   axios.head(`${BASE_URI}`, {
     headers: {
@@ -74,14 +95,14 @@ const onLoadEnd = (dispatch, file) => () => {
       partNumbers
     }
   })
-  .then(resp => console.log(resp))
-  .catch(onFileNotExist(dispatch, fileName, parts));
+  .then(() => dispatch(onAddFile(parts)))
+  .catch(onFileNotExist(dispatch)(fileName)(parts));
 }
 
-const onAddFile = dispatch => event => {
+const onAddFile = dispatch => chunked => event => {
   const reader = new FileReader();
   const file = event.target.files[0];
-  reader.onloadend = onLoadEnd(dispatch, file);
+  reader.onloadend = onLoadEnd(dispatch)(file)(chunked);
   reader.readAsDataURL(file);
 }
 
@@ -102,34 +123,63 @@ const uploadPart = dispatch => startTime => part => {
       const speed = computeSpeed(ev.loaded, startTime);
 
       dispatch(updateProgress({ partNumber, progress, speed }));
-      // if (progress === 100) dispatch(donePart(file));
     }
   })
-  .then(resp => console.log(resp));
+  .then(() => "done");
 };
+
+const onPartsComplete = fileName => partNumbers => fileSize => dispatch => {
+  axios.post(`${BASE_URI}/complete`, null, {
+    headers: {
+      fileName,
+      partNumbers,
+      fileSize
+    }
+  })
+  .then(() => dispatch(finishUpload()))
+  .catch(err => console.log(err));
+}
 
 const onUploadFile = dispatch => parts => event => {
   const startTime = moment();
+  const { fileName, fileSize } = parts[0];
+  const partNumbers = parts.map(p => p.partNumber);
+  const len = parts.length;
 
   console.log('Uploading.');
 
-  Rx.Observable.from(parts)
-    .subscribe(uploadPart(dispatch)(startTime));
+  const source = Rx.Observable.from(parts)
+    .map(uploadPart(dispatch)(startTime))
+    .take(len)
+    .combineAll();
+  
+  source.subscribe((doneParts: String[]) => {
+    if (doneParts.every(p => p === "done")) {
+      onPartsComplete(fileName)(partNumbers)(fileSize)(dispatch);
+    }
+  });
+}
+
+const onChunkToggle = dispatch => event => {
+  dispatch(toggleChunkMode());
 }
 
 // Store Connectors
 const mapStateToProps = (state) => ({
   file: state.file,
   parts: state.parts,
+  uploadDone: state.uploadDone,
+  chunked: state.chunked,
   progressData: state.progressData
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onAddFile: onAddFile(dispatch),
-  onUploadFile: onUploadFile(dispatch)
+  onUploadFile: onUploadFile(dispatch),
+  onChunkToggle: onChunkToggle(dispatch)
 });
 
-const Dashboard = ({ onAddFile, onUploadFile, parts, progressData }) => (
+const Dashboard = ({ onAddFile, onUploadFile, onChunkToggle, parts, progressData, uploadDone, chunked }) => (
   <div className='Dashboard container-fluid'>
     <section className='row align-items-center justify-content-center'>
       <div className='col-4'>
@@ -140,6 +190,8 @@ const Dashboard = ({ onAddFile, onUploadFile, parts, progressData }) => (
         <Uploader
           onAddFile={ onAddFile }
           onUploadFile={ onUploadFile }
+          onChunkToggle={ onChunkToggle }
+          chunked={ chunked }
           parts={ parts }
         />
       </div>
@@ -147,7 +199,8 @@ const Dashboard = ({ onAddFile, onUploadFile, parts, progressData }) => (
     <section className='row align-items-center justify-content-center'>
       <div className='col-4'>
         <h3>Upload Progress</h3>
-        <p>This component will reveal a table showing the progress of each chunk.</p>
+        <p>This component will reveal a table showing the progress of { chunked ? "each chunk." : "the file." }</p>
+        <p>{ uploadDone ? "Done!" : (parts ? "Your upload is in progress.." : "") }</p>
       </div>
       <div className='col-4'>
         <UploadProgress
