@@ -1,4 +1,4 @@
-package ReactMember;
+package TusSpringBoot;
 
 /**
  * Created by cvirtucio on 4/19/2017.

@@ -94,8 +94,10 @@ public class UploadUtil {
             newOffset = currentOffset + bytesTransferred;
 
             try {
-                is.close();
+                // TODO: need to somehow recover offset; filePointer is lost when raf is closed?
+                raf.seek(newOffset);
                 raf.close();
+                is.close();
             } catch (Exception e) {
                 log.error("Error in attempt to close channels for file part, " + filePath);
             } finally {

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ReactMember.iml" filepath="$PROJECT_DIR$/ReactMember.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tus-spring-boot.iml" filepath="$PROJECT_DIR$/tus-spring-boot.iml" />
     </modules>
   </component>
 </project>

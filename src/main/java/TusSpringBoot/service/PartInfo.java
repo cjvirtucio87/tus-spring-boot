@@ -1,4 +1,4 @@
-package ReactMember.service;
+package TusSpringBoot.service;
 
 import lombok.Builder;
 import lombok.Getter;

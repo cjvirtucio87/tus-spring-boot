@@ -1,11 +1,9 @@
-package ReactMember;
+package TusSpringBoot;
 
-import ReactMember.service.PartInfo;
-import ReactMember.service.UploadUtil;
-import org.apache.http.protocol.HTTP;
+import TusSpringBoot.service.PartInfo;
+import TusSpringBoot.service.UploadUtil;
 import org.apache.log4j.Logger;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

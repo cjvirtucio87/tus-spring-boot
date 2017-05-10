@@ -1,7 +1,7 @@
-# ReactMember
-##### A File Upload service built on Spring Boot and React-Redux.
+# TusSpringBoot
+##### A File Upload service built on Spring Boot and React-Redux, implementing the [TUS Protocol](http://tus.io/).
 
-Run `src/main/java/ReactMember/App` to start the back-end server.
+Run `src/main/java/TusSpringBoot/App` to start the back-end server.
 
 To run the client app, cd into `src/client` and type `npm start`.
 
@@ -9,9 +9,11 @@ The back-end server will be hosted on `localhost:8080`, while the React app will
 
 #### CURRENT FEATURES
 
-Chunk-based upload.
+- Chunk-based upload.
+- Toggle between single stream and chunked uploads.
+- Progress table.
 
 #### TODOs
 
-- add event for upload completion
-- add handler for concatenating chunks
+- Add event for upload completion
+- Add handler for concatenating chunks
