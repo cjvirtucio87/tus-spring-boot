@@ -13,6 +13,7 @@ import { addFile, updateProgress, finishUpload, toggleChunkMode } from '../../ac
 
 import presentational from '../../presentational/';
 
+import { computeProgress, computeElapsedTime } from '../../utils/local-math';
 import axios from 'axios';
 import * as moment from 'moment';
 import * as Rx from 'rxjs';
@@ -22,8 +23,6 @@ import './style.css';
 const { Uploader, UploadProgress } = presentational;
 
 // Math
-const computeProgress = (loaded, fileSize) => Math.floor((loaded / fileSize) * 100);
-const computeElapsedTime = (unit) => (startTime) => moment().diff(startTime, unit) || 1;
 const computeElapsedSeconds = computeElapsedTime('seconds');
 const computeSpeed = (loaded, startTime) => Math.floor(loaded / ( computeElapsedSeconds(startTime) ));
 
@@ -77,9 +76,9 @@ const onFileNotExist = dispatch => fileName => parts => () => {
     headers: {
       fileName
     }
-  }).then(resp => {
-    const { headers } = resp;
-    console.log(`Created directory, ${headers.filedir}`);
+  }).then(({ headers }) => {
+    const { filedir } = headers;
+    console.log(`Created directory, ${filedir}`);
     dispatch(addFile(parts));
   });
 }
@@ -95,9 +94,10 @@ const onLoadEnd = dispatch => file => chunked => () => {
       partNumbers
     }
   })
-  .then(resp => {
-    console.log(resp);
-    dispatch(addFile(parts));
+  .then(({ data }) => {
+    console.log(data);
+    const message = addFile( parts.map( (p,i) => ({ ...p, loaded: data[i] }) ) );
+    dispatch(message);
   })
   .catch(onFileNotExist(dispatch)(fileName)(parts));
 }
@@ -149,8 +149,6 @@ const onUploadFile = dispatch => parts => event => {
   const partNumbers = parts.map(p => p.partNumber);
   const len = parts.length;
 
-  console.log('Uploading.');
-
   const source = Rx.Observable.from(parts)
     .map(uploadPart(dispatch)(startTime))
     .take(len)
@@ -168,7 +166,7 @@ const onChunkToggle = dispatch => event => {
 }
 
 // Store Connectors
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   file: state.file,
   parts: state.parts,
   uploadDone: state.uploadDone,
@@ -176,7 +174,7 @@ const mapStateToProps = (state) => ({
   progressData: state.progressData
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   onAddFile: onAddFile(dispatch),
   onUploadFile: onUploadFile(dispatch),
   onChunkToggle: onChunkToggle(dispatch)
