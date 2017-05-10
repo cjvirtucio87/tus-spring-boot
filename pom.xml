@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cjvirtucio</groupId>
-    <artifactId>ReactMember</artifactId>
+    <artifactId>TusSpringBoot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
 
@@ -68,6 +68,21 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- This plugin allows you to package Spring Boot-based jar or war file, allowing you to run an application in place. -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.5.3.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 
