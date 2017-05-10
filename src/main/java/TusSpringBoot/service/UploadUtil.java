@@ -1,4 +1,4 @@
-package ReactMember.service;
+package TusSpringBoot.service;
 
 import org.apache.log4j.Logger;
 
@@ -11,8 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Predicate;
-
-import static java.io.File.separator;
 
 /**
  * Created by cvirtucio on 4/20/2017.
@@ -29,7 +27,8 @@ public class UploadUtil {
 
         try {
             raf = new RandomAccessFile(filePath, "rw");
-            filePointer = raf.getFilePointer();
+            filePointer = raf.length();
+//            filePointer = raf.getFilePointer();
         } catch (Exception e) {
             log.error("Error attempting to get offset for file, " + filePath);
         } finally {
