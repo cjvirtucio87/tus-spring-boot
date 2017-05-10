@@ -2,22 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="856a938b-586c-4858-9307-95cd9961e925" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/ReactMember.iml" afterPath="$PROJECT_DIR$/tus-spring-boot.iml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ReactMember/App.java" afterPath="$PROJECT_DIR$/src/main/java/TusSpringBoot/App.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ReactMember/Constants.java" afterPath="$PROJECT_DIR$/src/main/java/TusSpringBoot/Constants.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ReactMember/UploadController.java" afterPath="$PROJECT_DIR$/src/main/java/TusSpringBoot/UploadController.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ReactMember/service/PartInfo.java" afterPath="$PROJECT_DIR$/src/main/java/TusSpringBoot/service/PartInfo.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ReactMember/service/UploadUtil.java" afterPath="$PROJECT_DIR$/src/main/java/TusSpringBoot/service/UploadUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="$PROJECT_DIR$/.idea/.name" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/client/public/index.html" afterPath="$PROJECT_DIR$/src/client/public/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/client/src/container/Dashboard/index.tsx" afterPath="$PROJECT_DIR$/src/client/src/container/Dashboard/index.tsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/client/src/presentational/UploadProgress/index.tsx" afterPath="$PROJECT_DIR$/src/client/src/presentational/UploadProgress/index.tsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/client/src/presentational/Uploader/index.tsx" afterPath="$PROJECT_DIR$/src/client/src/presentational/Uploader/index.tsx" />
     </list>
     <ignored path="$PROJECT_DIR$/../out/" />
     <ignored path="$PROJECT_DIR$/../target/" />
@@ -42,20 +27,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
+      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="1357">
+              <caret line="59" column="2" lean-forward="false" selection-start-line="59" selection-start-column="2" selection-end-line="59" selection-end-column="2" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UploadController.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="UploadController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/TusSpringBoot/UploadController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
+            <state relative-caret-position="-2248">
               <caret line="20" column="3" lean-forward="false" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="3" />
               <folding />
             </state>
@@ -964,18 +949,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/TusSpringBoot/UploadController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        <state relative-caret-position="-2248">
+          <caret line="20" column="3" lean-forward="false" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="3" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/TusSpringBoot/UploadController.java">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="20" column="3" lean-forward="false" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="3" />
+        <state relative-caret-position="1357">
+          <caret line="59" column="2" lean-forward="false" selection-start-line="59" selection-start-column="2" selection-end-line="59" selection-end-column="2" />
           <folding />
         </state>
       </provider>

@@ -128,7 +128,5 @@
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:3.0.24" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.16" level="project" />
-    <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.2.9" level="project" />
-    <orderEntry type="library" name="Maven: io.reactivex:rxjava-string:1.1.1" level="project" />
   </component>
 </module>
