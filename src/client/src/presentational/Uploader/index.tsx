@@ -1,8 +1,6 @@
 import * as React from 'react';
 import * as update from 'immutability-helper';
 
-import axios from 'axios';
-
 const Uploader = ({ onAddFile, onUploadFile, onChunkToggle, parts, chunked }) => (
   <div className='Uploader'>
       <label htmlFor='fileUploader'>File Uploader</label>
