@@ -42,21 +42,12 @@ const createFilePart = (file, fileName) => (
 const createFileParts = (file, fileName, uploadOffset, uploadLength, partNumber, parts) => {
   const fileSize = file.size;
   if (uploadOffset >= file.size) return parts;
-
-  /*
-    0:2, 3:4, 5:6
-    0:2, 0:1, 0:1
-    2 bytes to be transferred; 1 byte to be transferred; 1 byte to be transferred;
-    bytesToBeTransferred = (len - offset)
-    upperBoundPart = bytesToBeTransferred
-    lowerBoundPart = 0
-    Therefore, we only transfer bytes when (bytesToBeTransferred - lowerBoundPart) > 0;
-  */
   
   parts.push({
     file: file.slice(uploadOffset, uploadLength + 1),
     fileName,
     partNumber,
+    partSize: capAtFilesize(uploadLength, fileSize) - capAtFilesize(uploadOffset, fileSize),
     uploadOffset: capAtFilesize(uploadOffset, fileSize),
     uploadLength: capAtFilesize(uploadLength, fileSize),
     fileSize
@@ -72,7 +63,7 @@ const createFileParts = (file, fileName, uploadOffset, uploadLength, partNumber,
 
 const onFileNotExist = dispatch => fileName => parts => () => {
   console.log(`File not found. Creating directory for file, ${fileName}`);
-  axios.post(`${BASE_URI}`, null, {
+  axios.post(`${BASE_URI}/files`, null, {
     headers: {
       fileName
     }
@@ -80,24 +71,33 @@ const onFileNotExist = dispatch => fileName => parts => () => {
     const { filedir } = headers;
     console.log(`Created directory, ${filedir}`);
     dispatch(addFile(parts));
+  }).catch(err => {
+    console.log(`Error during directory creation for file, ${fileName}`);
+    console.log(err);
   });
 }
+
+const refreshFileData = data => (p,i) => ({
+  ...p,
+  file: p.file.slice(data[i]),
+  uploadOffset: p.uploadOffset + data[i], 
+  loaded: ( data[i] / p.partSize ) * 100
+})
 
 const onLoadEnd = dispatch => file => chunked => () => {
   const fileName = FILENAME_PATTERN.exec(file.name)[1];
   const parts = chunked ? createFileParts(file, fileName, 0, PART_SIZE, 0, []) : [createFilePart(file, fileName)];
   const partNumbers = chunked ? parts.map(part => part.partNumber) : [0];
 
-  axios.get(`${BASE_URI}`, {
+  axios.get(`${BASE_URI}/file/${fileName}`, {
     headers: {
       fileName,
       partNumbers
     }
   })
   .then(({ data }) => {
-    console.log(data);
-    const message = addFile( parts.map( (p,i) => ({ ...p, loaded: data[i] }) ) );
-    dispatch(message);
+    console.log(`File already exists. Refreshing file data on progress bar for file, ${fileName}`);
+    dispatch(addFile(parts.map(refreshFileData(data))));
   })
   .catch(onFileNotExist(dispatch)(fileName)(parts));
 }
@@ -110,15 +110,16 @@ const onAddFile = dispatch => chunked => event => {
 }
 
 const uploadPart = dispatch => startTime => part => {
-  const { partNumber, uploadOffset, uploadLength, file, fileName } = part;
+  const { partNumber, uploadOffset, uploadLength, file, fileName, fileSize } = part;
 
-  return axios.patch(`${BASE_URI}/${fileName}`, file, {
+  return axios.patch(`${BASE_URI}/file/${fileName}`, file, {
     headers: {
       'content-type': 'text/plain',
       fileName,
       partNumber,
       uploadOffset,
       uploadLength,
+      fileSize,
       userName: 'cjvirtucio'
     },
     onUploadProgress(ev) {
@@ -128,11 +129,15 @@ const uploadPart = dispatch => startTime => part => {
       dispatch(updateProgress({ partNumber, progress, speed }));
     }
   })
-  .then(() => "done");
+  .then(() => "done")
+  .catch(err => {
+    console.log("Error during upload patch for file, " + fileName);
+    console.log(err);
+  });
 };
 
 const onPartsComplete = fileName => partNumbers => fileSize => dispatch => {
-  axios.post(`${BASE_URI}/complete`, null, {
+  axios.post(`${BASE_URI}/files/complete`, null, {
     headers: {
       fileName,
       partNumbers,
