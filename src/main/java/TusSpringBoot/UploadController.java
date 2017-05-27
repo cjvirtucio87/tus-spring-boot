@@ -2,8 +2,7 @@ package TusSpringBoot;
 
 import TusSpringBoot.service.PartInfo;
 import TusSpringBoot.service.UploadUtil;
-import org.apache.log4j.Logger;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,20 +11,19 @@ import org.springframework.web.bind.annotation.*;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
  * Created by cvirtucio on 4/18/2017.
  */
-@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = { "fileDir", "fileName", "uploadOffset", "partNumber", "filePointer"})
+@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = { "fileDir", "fileName", "uploadOffset", "partNumber", "reason"})
 @Controller
-@EnableAutoConfiguration
+@RequestMapping("/upload")
+@Slf4j
 public class UploadController {
-    private static final Logger log = Logger.getLogger(UploadController.class);
 
-    @GetMapping("/upload")
+    @GetMapping("/file/{id}")
     public ResponseEntity readUpload(
             @RequestHeader(name="fileName") String fileName,
             @RequestHeader(name="partNumbers") List<Long> partNumbers
@@ -36,12 +34,12 @@ public class UploadController {
 
         return Optional.of(fileName)
                 .filter(UploadUtil::checkIfExists)
-                .map(name -> partInfoList.stream().map(UploadUtil::getFilePointer).collect(Collectors.toList()))
+                .map(name -> partInfoList.stream().map(UploadUtil::getCurrentOffset).collect(Collectors.toList()))
                 .map(this::onExists)
                 .orElseGet(onNotExist(fileName));
     }
 
-    @PostMapping("/upload")
+    @PostMapping("/files")
     public ResponseEntity createUpload(
             @RequestHeader(name="fileName") String fileName
     ) {
@@ -51,17 +49,19 @@ public class UploadController {
                 .get();
     }
 
-    @PatchMapping("/upload/{id}")
+    @PatchMapping("/file/{id}")
     public ResponseEntity updateUpload(
             @RequestHeader(name="fileName") String fileName,
             @RequestHeader(name="partNumber") Long partNumber,
             @RequestHeader(name="uploadOffset") Long uploadOffset,
             @RequestHeader(name="uploadLength") Long uploadLength,
+            @RequestHeader(name="fileSize") Long fileSize,
             @RequestHeader(name="userName") String userName,
             InputStream inputStream
     ) {
         PartInfo partInfo = PartInfo
                 .builder()
+                .fileSize(fileSize)
                 .fileName(fileName)
                 .partNumber(partNumber)
                 .uploadOffset(uploadOffset)
@@ -72,12 +72,12 @@ public class UploadController {
 
         return Optional.of(partInfo)
                 .map(UploadUtil::writeFilePart)
-                .filter(UploadUtil.checkIfComplete(partInfo))
-                .map(onComplete(partInfo))
+                .filter(UploadUtil::checkIfComplete)
+                .map(this::onComplete)
                 .orElseGet(onInterrupt(partInfo));
     }
 
-    @PostMapping("/upload/complete")
+    @PostMapping("/files/complete")
     public ResponseEntity completeUpload(
             @RequestHeader(name="fileName") String fileName,
             @RequestHeader(name="partNumbers") List<Long> partNumbers,
@@ -118,9 +118,9 @@ public class UploadController {
                 .build();
     }
 
-    private ResponseEntity onExists(List<Long> filePointerList) {
+    private ResponseEntity onExists(List<Long> currentOffsetList) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(filePointerList);
+                .body(currentOffsetList);
     }
 
     private Supplier<ResponseEntity> onNotExist(String fileName) {
@@ -129,9 +129,9 @@ public class UploadController {
                 .body("No upload has been created for file, " + fileName + ", yet.");
     }
 
-    private Function<Long, ResponseEntity> onComplete(PartInfo partInfo) {
-        return newOffset -> ResponseEntity.status(HttpStatus.CREATED)
-                .header("partNumber", partInfo.getPartNumber().toString())
+    private ResponseEntity onComplete(PartInfo partInfo) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .header("newOffset", partInfo.getUploadOffset().toString())
                 .build();
     }
 
