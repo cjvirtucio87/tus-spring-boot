@@ -23,12 +23,12 @@ public class UploadUtil {
     public static Long getCurrentOffset(PartInfo partInfo) {
         String filePath = createFilePath(partInfo);
         log.info("Retrieving pointer for file part, " + filePath);
-        Long filePointer = 0L;
+        Long currentOffset = 0L;
         RandomAccessFile raf = null;
 
         try {
             raf = new RandomAccessFile(filePath, "rw");
-            filePointer = raf.length();
+            currentOffset = raf.length();
         } catch (Exception e) {
             log.error("Error attempting to get offset for file, " + filePath);
         } finally {
@@ -39,7 +39,7 @@ public class UploadUtil {
             }
         }
 
-        return filePointer;
+        return currentOffset;
     }
 
     public static String createDirectory(String fileName) {
