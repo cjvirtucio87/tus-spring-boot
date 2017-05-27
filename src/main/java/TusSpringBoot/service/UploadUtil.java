@@ -1,5 +1,6 @@
 package TusSpringBoot.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -16,10 +17,10 @@ import java.util.function.Predicate;
  * Created by cvirtucio on 4/20/2017.
  */
 
+@Slf4j
 public class UploadUtil {
-    private static final Logger log = Logger.getLogger(UploadUtil.class);
 
-    public static Long getFilePointer(PartInfo partInfo) {
+    public static Long getCurrentOffset(PartInfo partInfo) {
         String filePath = createFilePath(partInfo);
         log.info("Retrieving pointer for file part, " + filePath);
         Long filePointer = 0L;
@@ -28,7 +29,6 @@ public class UploadUtil {
         try {
             raf = new RandomAccessFile(filePath, "rw");
             filePointer = raf.length();
-//            filePointer = raf.getFilePointer();
         } catch (Exception e) {
             log.error("Error attempting to get offset for file, " + filePath);
         } finally {
@@ -62,9 +62,8 @@ public class UploadUtil {
         return Files.exists(path);
     }
 
-    public static Long writeFilePart(PartInfo partInfo) {
+    public static PartInfo writeFilePart(PartInfo partInfo) {
         String filePath = createFilePath(partInfo);
-        Long currentOffset = 0L;
         Long newOffset = 0L;
         Long bytesTransferred = 0L;
         RandomAccessFile raf = null;
@@ -74,14 +73,13 @@ public class UploadUtil {
         try {
             log.info("Opening channels for file part, " + filePath);
             raf = new RandomAccessFile(filePath, "rw");
-            is = UploadUtil.getByteChannel(currentOffset, partInfo);
+            is = Channels.newChannel(partInfo.getInputStream());
             os = raf.getChannel();
-            currentOffset = raf.getFilePointer();
 
             log.info("Writing file part, " + filePath);
-            Long bytesToTransfer = (partInfo.getUploadLength() - partInfo.getUploadOffset()) - currentOffset;
+            Long bytesToTransfer = (partInfo.getUploadLength() - partInfo.getUploadOffset());
             if (bytesToTransfer > 0) {
-                bytesTransferred = os.transferFrom(is, currentOffset, bytesToTransfer);
+                bytesTransferred = os.transferFrom(is, os.size(), bytesToTransfer);
             }
 
             log.info("Done writing file part, " + filePath);
@@ -90,29 +88,32 @@ public class UploadUtil {
             log.error("Error", e);
         } finally {
             log.info("Closing channels for file part, " + filePath);
-            newOffset = currentOffset + bytesTransferred;
+            newOffset = bytesTransferred + partInfo.getUploadOffset();
 
             try {
-                // TODO: need to somehow recover offset; filePointer is lost when raf is closed?
-                raf.seek(newOffset);
                 raf.close();
                 is.close();
             } catch (Exception e) {
                 log.error("Error in attempt to close channels for file part, " + filePath);
             } finally {
-                return newOffset;
+                return PartInfo.builder()
+                        .uploadOffset(newOffset)
+                        .uploadLength(partInfo.uploadLength)
+                        .fileName(partInfo.fileName)
+                        .partNumber(partInfo.partNumber)
+                        .build();
             }
         }
     }
 
-    public static Predicate<Long> checkIfComplete(PartInfo partInfo) {
-        return filePointer -> filePointer == (partInfo.getUploadLength() - partInfo.getUploadOffset());
+    public static boolean checkIfComplete(PartInfo partInfo) {
+        return partInfo.uploadOffset.equals(partInfo.uploadLength);
     }
 
     public static String concatenate(List<PartInfo> partInfoList) {
-        final String fileName = partInfoList.get(0).getFileName();
-        final Long fileSize = partInfoList.get(0).getFileSize();
-        final String finalPath = Paths.get(
+        String fileName = partInfoList.get(0).getFileName();
+        Long fileSize = partInfoList.get(0).getFileSize();
+        String finalPath = Paths.get(
                 System.getProperty("java.io.tmpdir"),
                 fileName,
                 fileName
