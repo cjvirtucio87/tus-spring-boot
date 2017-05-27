@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { find } from 'lodash';
 import PartInProgress from '../PartInProgress';
-import { computeProgress } from '../../utils/local-math';
 
 const onMap = progressData => part => {
   const partProgress = progressData[part.partNumber];
-  const defaultProgress = { progress: computeProgress((part.loaded ? part.loaded : 0), part.uploadLength - part.uploadOffset), speed: 0 };
+  const defaultProgress = { progress: part.loaded ? part.loaded : 0, speed: 0 };
   const { progress, speed } = partProgress ? partProgress : defaultProgress;
 
   return (
