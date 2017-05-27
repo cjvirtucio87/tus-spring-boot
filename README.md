@@ -12,6 +12,7 @@ The back-end server will be hosted on `localhost:8080`, while the React app will
 - Chunk-based upload.
 - Toggle between single stream and chunked uploads.
 - Progress table.
+- Fault-tolerant; can resume upload even after restarting your machine.
 
 #### TODOs
 
