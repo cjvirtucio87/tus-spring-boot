@@ -1,7 +1,7 @@
-package TusSpringBoot;
+package tusspringboot;
 
-import TusSpringBoot.service.PartInfo;
-import TusSpringBoot.service.UploadUtil;
+import tusspringboot.service.PartInfo;
+import tusspringboot.service.UploadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -98,10 +98,10 @@ public class UploadController {
         return "Destroying upload.";
     }
 
-    private ResponseEntity onConcatenate(String fileName) {
+    private ResponseEntity onConcatenate(Long totalBytesUploaded) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header("fileName", fileName)
+                .header("totalBytesUploaded", totalBytesUploaded.toString())
                 .build();
     }
 
