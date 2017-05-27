@@ -145,7 +145,10 @@ const onPartsComplete = fileName => partNumbers => fileSize => dispatch => {
     }
   })
   .then(() => dispatch(finishUpload()))
-  .catch(err => console.log(err));
+  .catch(err => {
+    console.log(`Error during upload concatenation for file, ${fileName}`);
+    console.log(err);
+  });
 }
 
 const onUploadFile = dispatch => parts => event => {
