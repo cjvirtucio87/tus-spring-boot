@@ -1,13 +1,16 @@
 package tusspringboot;
 
+import org.apache.http.protocol.HTTP;
+import org.springframework.beans.factory.annotation.Autowired;
 import tusspringboot.service.PartInfo;
-import tusspringboot.service.UploadUtil;
+import tusspringboot.service.UploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +26,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UploadController {
 
+    @Autowired
+    UploadService uploadService;
+
     @GetMapping("/file/{id}")
     public ResponseEntity readUpload(
             @RequestHeader(name="fileName") String fileName,
@@ -32,21 +38,22 @@ public class UploadController {
                 .map(num -> PartInfo.builder().fileName(fileName).partNumber(num).build())
                 .collect(Collectors.toList());
 
-        return Optional.of(fileName)
-                .filter(UploadUtil::checkIfExists)
-                .map(name -> partInfoList.stream().map(UploadUtil::getCurrentOffset).collect(Collectors.toList()))
-                .map(this::onExists)
-                .orElseGet(onNotExist(fileName));
+        try {
+            return onExists(uploadService.mapToCurrentOffsetList(fileName, partInfoList));
+        } catch (IOException e) {
+            return onNotExist(fileName);
+        }
     }
 
     @PostMapping("/files")
     public ResponseEntity createUpload(
             @RequestHeader(name="fileName") String fileName
     ) {
-        return Optional.of(fileName)
-                .map(UploadUtil::createDirectory)
-                .map(this::onCreateDir)
-                .get();
+        try {
+            return onCreateDir(uploadService.mapToDirectoryPath(fileName));
+        } catch (IOException e) {
+            return onFailedCreateDir(fileName, e.getMessage());
+        }
     }
 
     @PatchMapping("/file/{id}")
@@ -70,11 +77,11 @@ public class UploadController {
                 .inputStream(inputStream)
                 .build();
 
-        return Optional.of(partInfo)
-                .map(UploadUtil::writeFilePart)
-                .filter(UploadUtil::checkIfComplete)
-                .map(this::onComplete)
-                .orElseGet(onInterrupt(partInfo));
+        try {
+            return onComplete(uploadService.mapToPartInfoWrittenBytes(partInfo));
+        } catch (IOException e) {
+            return onInterrupt(partInfo, e.getMessage());
+        }
     }
 
     @PostMapping("/files/complete")
@@ -87,10 +94,11 @@ public class UploadController {
                 .map(partNumber -> PartInfo.builder().fileName(fileName).partNumber(partNumber).fileSize(fileSize).build())
                 .collect(Collectors.toList());
 
-        return Optional.of(partInfoList)
-                .map(UploadUtil::concatenate)
-                .map(this::onConcatenate)
-                .orElseGet(this::onFailedConcatenate);
+        try {
+            return onConcatenate(uploadService.concatenate(partInfoList));
+        } catch (IOException e) {
+            return onFailedConcatenate(fileName, e.getMessage());
+        }
     }
 
     @RequestMapping(value="/destroy", method=RequestMethod.DELETE)
@@ -105,11 +113,11 @@ public class UploadController {
                 .build();
     }
 
-    private ResponseEntity onFailedConcatenate() {
+    private ResponseEntity onFailedConcatenate(String fileName, String errorMessage) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .header("reason", "Failed to concatenate file.")
-                .build();
+                .header("fileName", fileName)
+                .body(errorMessage);
     }
 
     private ResponseEntity onCreateDir(String fileDir) {
@@ -123,8 +131,8 @@ public class UploadController {
                 .body(currentOffsetList);
     }
 
-    private Supplier<ResponseEntity> onNotExist(String fileName) {
-        return () -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    private ResponseEntity onNotExist(String fileName) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .header("fileName", fileName)
                 .body("No upload has been created for file, " + fileName + ", yet.");
     }
@@ -135,9 +143,15 @@ public class UploadController {
                 .build();
     }
 
-    private Supplier<ResponseEntity> onInterrupt(PartInfo partInfo) {
-        return () -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    private ResponseEntity onInterrupt(PartInfo partInfo, String errorMessage) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .header("partNumber", partInfo.getPartNumber().toString())
-                .build();
+                .body(errorMessage);
+    }
+
+    private ResponseEntity onFailedCreateDir(String fileName, String errorMessage) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .header("fileName", fileName)
+                .body(errorMessage);
     }
 }
