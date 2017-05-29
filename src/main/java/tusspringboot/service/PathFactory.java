@@ -21,4 +21,11 @@ public class PathFactory {
                 partInfo.getFileName() + "_" + partInfo.getPartNumber()
         );
     }
+
+    public static Path createFinalPath(String fileName) {
+        return Paths.get(TMP_DIR, fileName, fileName);
+    }
+
+    protected PathFactory() {
+    }
 }
