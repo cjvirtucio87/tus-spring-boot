@@ -1,7 +1,6 @@
 package tusspringboot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,11 +11,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.ToLongFunction;
-
-import static tusspringboot.Constants.TMP_DIR;
 
 /**
  * Created by cjvirtucio on 5/29/17.
@@ -72,7 +68,7 @@ public class UploadFileWriter {
 
     public Long concatenateFileParts(List<PartInfo> partInfoList) throws IOException {
         String fileName = partInfoList.get(0).getFileName();
-        String finalPath = Paths.get(TMP_DIR, fileName, fileName).toString();
+        String finalPath = PathFactory.createFinalPath(fileName).toString();
         Long totalBytesTransferred = 0L;
 
         try (
@@ -95,13 +91,7 @@ public class UploadFileWriter {
         return partInfo -> {
             Long bytesTransferred = 0L;
             try {
-                InputStream is = Files.newInputStream(
-                        Paths.get(
-                                TMP_DIR,
-                                partInfo.getFileName(),
-                                partInfo.getFileName() + "_" + partInfo.getPartNumber()
-                        )
-                );
+                InputStream is = Files.newInputStream(PathFactory.createPartPath(partInfo));
 
                 bytesTransferred = outputStream.transferFrom(
                         Channels.newChannel(is),

@@ -3,10 +3,8 @@ package tusspringboot.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.file.Paths;
-
-import static tusspringboot.Constants.TMP_DIR;
 
 /**
  * Created by cjvirtucio on 5/29/17.
@@ -16,7 +14,7 @@ import static tusspringboot.Constants.TMP_DIR;
 public class UploadFileReader {
 
     public boolean checkIfExists(String fileName) {
-        return Paths.get(TMP_DIR, fileName).toFile().exists();
+        return PathFactory.createDirectoryPath(fileName).toFile().exists();
     }
 
     public boolean checkIfComplete(PartInfo partInfo) {
@@ -30,7 +28,7 @@ public class UploadFileReader {
 
         try (RandomAccessFile raf = new RandomAccessFile(filePath, "rw");) {
             currentOffset = raf.length();
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error("Error attempting to get offset for file, " + filePath);
             throw new RuntimeException(e);
         }
