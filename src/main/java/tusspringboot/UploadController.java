@@ -95,7 +95,7 @@ public class UploadController {
                 .collect(Collectors.toList());
 
         try {
-            return onConcatenate(uploadService.concatenate(partInfoList));
+            return onConcatenate(uploadService.reduceToTotalBytesTransferred(partInfoList));
         } catch (IOException e) {
             return onFailedConcatenate(fileName, e.getMessage());
         }
