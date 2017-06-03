@@ -1,4 +1,4 @@
-package tusspringboot.service;
+package com.tusspringboot.service;
 
 import lombok.Builder;
 import lombok.Getter;

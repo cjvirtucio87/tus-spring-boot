@@ -1,9 +1,9 @@
-package tusspringboot.service;
+package com.tusspringboot.service;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static tusspringboot.Constants.TMP_DIR;
+import static com.tusspringboot.Constants.TMP_DIR;
 
 /**
  * Created by cjvirtucio on 5/29/17.

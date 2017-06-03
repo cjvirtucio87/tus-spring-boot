@@ -1,4 +1,4 @@
-package tusspringboot.service;
+package com.tusspringboot.service;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static tusspringboot.Constants.*;
+import static com.tusspringboot.Constants.*;
 
 /**
  * Created by cjvirtucio on 5/29/17.
@@ -28,14 +28,17 @@ public class UploadFileReaderTest {
     @InjectMocks
     UploadFileReader uploadFileReader;
 
-    private PartInfo testPartInfo = PartInfo.builder().fileName(TEST_FILENAME).partNumber(0L).build();
+    private PartInfo testPartInfo;
 
-    private Path testDirPath = PathFactory.createDirectoryPath(TEST_FILENAME);
+    private Path testDirPath;
 
-    private Path testPartPath = PathFactory.createPartPath(testPartInfo);
+    private Path testPartPath;
 
     @Before
     public void setup() throws IOException {
+        testPartInfo = PartInfo.builder().fileName(TEST_FILENAME).partNumber(0L).build();
+        testDirPath = PathFactory.createDirectoryPath(TEST_FILENAME);
+        testPartPath = PathFactory.createPartPath(testPartInfo);
         Files.createDirectory(testDirPath);
         Files.createFile(testPartPath);
     }

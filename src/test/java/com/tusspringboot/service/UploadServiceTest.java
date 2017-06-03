@@ -1,5 +1,6 @@
-package tusspringboot.service;
+package com.tusspringboot.service;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,7 +15,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
-import static tusspringboot.Constants.*;
+import static com.tusspringboot.Constants.*;
 
 /**
  * Created by cjvirtucio on 5/27/17.
@@ -54,10 +55,10 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void mapToDirectoryPath_ReturnDirectoryPathString_OnValidFilename() throws IOException {
+    public void mapToDirectoryPath_ReturnDirectoryPathString_OnNotNullFilename() throws IOException {
         when(uploadFileWriter.createDirectory(anyString())).thenReturn(TEST_FILEDIR);
 
-        assertEquals(TEST_FILEDIR, uploadService.mapToDirectoryPath(TEST_FILENAME));
+        Assert.assertEquals(TEST_FILEDIR, uploadService.mapToDirectoryPath(TEST_FILENAME));
     }
 
     @Test(expected = IOException.class)
@@ -68,7 +69,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void mapToPartInfoWrittenBytes_ReturnPartInfoWithWrittenBytes() throws IOException {
+    public void mapToPartInfoWrittenBytes_ReturnPartInfoWithWrittenBytes_OnCompleteUpload() throws IOException {
         PartInfo partInfoInput = PartInfo.builder()
                 .fileSize(5L)
                 .fileName(TEST_FILENAME)
@@ -90,7 +91,7 @@ public class UploadServiceTest {
         when(uploadFileWriter.writeFilePart(partInfoInput)).thenReturn(partInfoOutput);
         when(uploadFileReader.checkIfComplete(partInfoOutput)).thenReturn(true);
 
-        assertEquals(TEST_UPLOADLENGTH, uploadService.mapToPartInfoWrittenBytes(partInfoInput).getUploadOffset());
+        Assert.assertEquals(TEST_UPLOADLENGTH, uploadService.mapToPartInfoWrittenBytes(partInfoInput).getUploadOffset());
     }
 
     @Test(expected = IOException.class)
@@ -116,7 +117,7 @@ public class UploadServiceTest {
         when(uploadFileWriter.writeFilePart(partInfoInput)).thenReturn(partInfoOutput);
         when(uploadFileReader.checkIfComplete(partInfoOutput)).thenReturn(false);
 
-        assertEquals((Long) 2L, uploadService.mapToPartInfoWrittenBytes(partInfoInput).getUploadOffset());
+        Assert.assertEquals((Long) 2L, uploadService.mapToPartInfoWrittenBytes(partInfoInput).getUploadOffset());
     }
 
     @Test
@@ -131,6 +132,6 @@ public class UploadServiceTest {
 
         when(uploadFileWriter.concatenateFileParts(partInfoList)).thenReturn(sum);
 
-        assertEquals((Long) (TEST_UPLOAD_PART_FILESIZE * 3), uploadService.reduceToTotalBytesTransferred(partInfoList));
+        Assert.assertEquals((Long) (TEST_UPLOAD_PART_FILESIZE * 3), uploadService.reduceToTotalBytesTransferred(partInfoList));
     }
 }

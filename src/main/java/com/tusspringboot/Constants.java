@@ -1,4 +1,4 @@
-package tusspringboot;
+package com.tusspringboot;
 
 /**
  * Created by cvirtucio on 4/19/2017.
@@ -23,4 +23,6 @@ public class Constants {
     public static final Long TEST_UPLOADLENGTH = 5L;
 
     public static final Long TEST_UPLOAD_PART_FILESIZE = 5L;
+
+    public static final Long TEST_UPLOAD_PART_COUNT = 5L;
 }
