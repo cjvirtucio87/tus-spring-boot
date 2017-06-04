@@ -1,6 +1,5 @@
 package com.tusspringboot.service;
 
-import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static com.tusspringboot.Constants.*;
 
 /**
@@ -52,13 +53,82 @@ public class UploadFileWriterTest {
     }
 
     @Test
+    public void createDirectory_CreatesDirectory_OnNotNullFilename() throws IOException {
+        uploadFileWriter.createDirectory(TEST_FILENAME);
+        assertTrue(testDirPath.toFile().exists());
+    }
+
+    @Test(expected = IOException.class)
+    public void createDirectory_DoesNotCreateDirectory_OnNullFilename() throws IOException {
+        uploadFileWriter.createDirectory(null);
+        assertFalse(testDirPath.toFile().exists());
+    }
+
+    @Test
     public void createDirectory_ReturnStringDir_OnNotNullFilename() throws IOException {
-        Assert.assertEquals(testDirPath.toString(), uploadFileWriter.createDirectory(TEST_FILENAME));
+        assertEquals(testDirPath.toString(), uploadFileWriter.createDirectory(TEST_FILENAME));
     }
 
     @Test(expected = IOException.class)
     public void createDirectory_ThrowIOException_OnNullFilename() throws IOException {
         uploadFileWriter.createDirectory(null);
+    }
+
+    @Test
+    public void writeFilePart_WritesFilePart_OnPartInfo() throws IOException {
+        Files.createDirectory(testDirPath);
+
+        InputStream is = createTestInputStream(createTestByteArray(TEST_UPLOADLENGTH));
+
+        PartInfo partInfoInput = PartInfo.builder()
+                .inputStream(is)
+                .fileName(TEST_FILENAME)
+                .partNumber(0L)
+                .uploadOffset(TEST_UPLOADOFFSET)
+                .uploadLength(TEST_UPLOADLENGTH)
+                .build();
+
+        uploadFileWriter.writeFilePart(partInfoInput);
+
+        assertTrue(testPartPath.toFile().exists());
+    }
+
+    @Test
+    public void writeFilePart_WritesBytesUpToUploadLength_OnPartInfoWithOffsetLessThanLength() throws IOException {
+        Files.createDirectory(testDirPath);
+
+        InputStream is = createTestInputStream(createTestByteArray(TEST_UPLOADLENGTH));
+
+        PartInfo partInfoInput = PartInfo.builder()
+                .inputStream(is)
+                .fileName(TEST_FILENAME)
+                .partNumber(0L)
+                .uploadOffset(TEST_UPLOADOFFSET)
+                .uploadLength(TEST_UPLOADLENGTH)
+                .build();
+
+        uploadFileWriter.writeFilePart(partInfoInput);
+
+        assertEquals((long) TEST_UPLOADLENGTH, testPartPath.toFile().length());
+    }
+
+    @Test
+    public void writeFilePart_WritesZeroBytes_OnPartInfoWithOffsetEqualLength() throws IOException {
+        Files.createDirectory(testDirPath);
+
+        InputStream is = createTestInputStream(createTestByteArray(TEST_UPLOADLENGTH));
+
+        PartInfo partInfoInput = PartInfo.builder()
+                .inputStream(is)
+                .fileName(TEST_FILENAME)
+                .partNumber(0L)
+                .uploadOffset(TEST_UPLOADOFFSET + TEST_UPLOADOFFSET_INC_COMPLETE)
+                .uploadLength(TEST_UPLOADLENGTH)
+                .build();
+
+        uploadFileWriter.writeFilePart(partInfoInput);
+
+        assertEquals(0L, testPartPath.toFile().length());
     }
 
     @Test
@@ -75,7 +145,7 @@ public class UploadFileWriterTest {
                 .uploadLength(TEST_UPLOADLENGTH)
                 .build();
 
-        Assert.assertEquals(TEST_UPLOADLENGTH, uploadFileWriter.writeFilePart(partInfoInput).getUploadOffset());
+        assertEquals(TEST_UPLOADLENGTH, uploadFileWriter.writeFilePart(partInfoInput).getUploadOffset());
     }
 
     @Test
@@ -92,7 +162,7 @@ public class UploadFileWriterTest {
                 .uploadLength(TEST_UPLOADLENGTH)
                 .build();
 
-        Assert.assertEquals(partInfoInput.getUploadOffset(), uploadFileWriter.writeFilePart(partInfoInput).getUploadOffset());
+        assertEquals(partInfoInput.getUploadOffset(), uploadFileWriter.writeFilePart(partInfoInput).getUploadOffset());
     }
 
     @Test
