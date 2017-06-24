@@ -19,5 +19,5 @@ The back-end server will be hosted on `localhost:8080`, while the React app will
 #### TODOs
 
 - Docker integration.
-- Unit Tests.
-- Refactor most logic into a singleton.
+- ~~Unit Tests.~~
+- ~~Refactor most logic into a singleton.~~
