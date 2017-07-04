@@ -1,13 +1,11 @@
 # TusSpringBoot
 ##### A File Upload service built on Spring Boot and React-Redux, implementing the [TUS Protocol](http://tus.io/).
 
+Make sure you have the latest versions of Maven and the JDK.
+
 Clone this repo.
 
-Enter `mvn clean package && java -jar target/TusSpringBoot-1.0-SNAPSHOT.war` to build the war file and run the application.
-
-To run the client app, cd into `src/client` and type `npm start`.
-
-The back-end server will be hosted on `localhost:8080`, while the React app will be hosted on `localhost:3000`.
+To run the application, enter `mvn clean install && mvn spring-boot:run`. The application will be hosted on localhost:8080. Upload a file, then close your browser (or even restart your machine!) before it hits 100%. When you try to upload the same file, the upload process will pick up where it left off.
 
 #### CURRENT FEATURES
 
@@ -18,6 +16,11 @@ The back-end server will be hosted on `localhost:8080`, while the React app will
 
 #### TODOs
 
-- Docker integration.
+- Checksum for data integrity
+- Scheduled file cleanup
+- Authentication
+- Persisting historical data about uploads
+- Deployment
+- ~~Docker integration.~~ (unnecessary; maven is sufficient for my needs)
 - ~~Unit Tests.~~
 - ~~Refactor most logic into a singleton.~~
