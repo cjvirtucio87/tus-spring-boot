@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static com.tusspringboot.Constants.*;
+import static com.tusspringboot.util.Constants.*;
 
 /**
  * Created by cjvirtucio on 5/29/17.

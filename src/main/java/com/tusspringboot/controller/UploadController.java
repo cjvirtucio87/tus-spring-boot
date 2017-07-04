@@ -1,4 +1,4 @@
-package com.tusspringboot;
+package com.tusspringboot.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.tusspringboot.service.PartInfo;

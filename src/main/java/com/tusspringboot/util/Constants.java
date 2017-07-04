@@ -1,4 +1,4 @@
-package com.tusspringboot;
+package com.tusspringboot.util;
 
 /**
  * Created by cvirtucio on 4/19/2017.

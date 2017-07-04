@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
-import static com.tusspringboot.Constants.*;
+import static com.tusspringboot.util.Constants.*;
 
 /**
  * Created by cjvirtucio on 5/27/17.
