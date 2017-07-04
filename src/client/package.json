@@ -16,12 +16,13 @@
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
-    "rxjs": "^5.3.0"
+    "rxjs": "^5.3.0",
+    "typescript": "2.4.1"
   },
   "scripts": {
     "start": "tsc && react-scripts-with-sass start",
     "build": "tsc && react-scripts-with-sass build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "tsc && react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
 }
