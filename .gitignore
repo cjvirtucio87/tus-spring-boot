@@ -1,6 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/libraries/
-src/client/node_modules
+src/client/node/
+src/client/node_modules/
 .classpath
 .project
 .settings/
@@ -10,6 +11,9 @@ src/client/build/
 # recursively traverse the file tree from src/ and pattern match *.js
 src/client/src/**/*.js
 src/client/src/**/*.js.map
-src/main/resources/static/css/
-src/main/resources/static/js/
+
+# will be built by client-side compilation
+src/main/resources/public/
+
+# output of java compilation
 target/**/*
