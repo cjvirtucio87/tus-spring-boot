@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/tus-spring-boot.iml" filepath="$PROJECT_DIR$/tus-spring-boot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TusSpringBoot.iml" filepath="$PROJECT_DIR$/TusSpringBoot.iml" />
     </modules>
   </component>
 </project>
