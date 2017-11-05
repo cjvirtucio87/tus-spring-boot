@@ -134,7 +134,7 @@
                         </goals>
                         <configuration>
                             <nodeVersion>v8.1.3</nodeVersion>
-                            <npmVersion>5.0.4</npmVersion>
+                            <npmVersion>5.5.1</npmVersion>
                         </configuration>
                     </execution>
                     <execution>
