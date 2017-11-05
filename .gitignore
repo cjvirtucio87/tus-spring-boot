@@ -17,3 +17,6 @@ src/main/resources/public/
 
 # output of java compilation
 target/**/*
+
+# output of running app
+log.txt
