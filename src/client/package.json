@@ -4,7 +4,6 @@
   "private": true,
   "devDependencies": {
     "@types/react": "^15.0.22",
-    "create-react-app-sass": "^1.1.0",
     "immutability-helper": "^2.1.2",
     "react-scripts": "0.9.5",
     "tsx": "^1.0.0"
@@ -20,8 +19,8 @@
     "typescript": "2.4.1"
   },
   "scripts": {
-    "start": "tsc && react-scripts-with-sass start",
-    "build": "tsc && react-scripts-with-sass build",
+    "start": "tsc && react-scripts start",
+    "build": "tsc && react-scripts build",
     "test": "tsc && react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
