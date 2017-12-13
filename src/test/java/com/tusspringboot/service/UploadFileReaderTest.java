@@ -1,5 +1,8 @@
 package com.tusspringboot.service;
 
+import com.tusspringboot.upload.data.PartInfo;
+import com.tusspringboot.upload.impl.UploadPathFactory;
+import com.tusspringboot.upload.impl.UploadFileReader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,8 +40,8 @@ public class UploadFileReaderTest {
     @Before
     public void setup() throws IOException {
         testPartInfo = PartInfo.builder().fileName(TEST_FILENAME).partNumber(0L).build();
-        testDirPath = PathFactory.createDirectoryPath(TEST_FILENAME);
-        testPartPath = PathFactory.createPartPath(testPartInfo);
+        testDirPath = UploadPathFactory.createDirectoryPath(TEST_FILENAME);
+        testPartPath = UploadPathFactory.createPartPath(testPartInfo);
         Files.createDirectory(testDirPath);
         Files.createFile(testPartPath);
     }

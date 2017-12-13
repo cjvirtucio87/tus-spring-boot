@@ -1,5 +1,6 @@
-package com.tusspringboot.service;
+package com.tusspringboot.upload.impl;
 
+import com.tusspringboot.upload.data.PartInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +15,15 @@ import java.io.RandomAccessFile;
 public class UploadFileReader {
 
     public boolean checkIfExists(String fileName) {
-        return PathFactory.createDirectoryPath(fileName).toFile().exists();
+        return UploadPathFactory.createDirectoryPath(fileName).toFile().exists();
     }
 
     public boolean checkIfComplete(PartInfo partInfo) {
-        return partInfo.uploadOffset.equals(partInfo.uploadLength);
+        return partInfo.getUploadOffset().equals(partInfo.getUploadLength());
     }
 
     public Long getCurrentOffset(PartInfo partInfo) {
-        String filePath = PathFactory.createPartPath(partInfo).toString();
+        String filePath = UploadPathFactory.createPartPath(partInfo).toString();
         log.info("Retrieving pointer for file part, " + filePath);
         Long currentOffset = 0L;
 

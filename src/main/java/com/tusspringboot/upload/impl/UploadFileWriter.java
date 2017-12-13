@@ -1,5 +1,6 @@
-package com.tusspringboot.service;
+package com.tusspringboot.upload.impl;
 
+import com.tusspringboot.upload.data.PartInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +28,14 @@ public class UploadFileWriter {
             throw new IOException("Cannot create directory for a null filename!");
         }
 
-        Path path = PathFactory.createDirectoryPath(fileName);
+        Path path = UploadPathFactory.createDirectoryPath(fileName);
         Files.createDirectory(path);
         log.info("Created file directory, " + path.toString());
         return path.toString();
     }
 
     public PartInfo writeFilePart(PartInfo partInfo) {
-        String filePath = PathFactory.createPartPath(partInfo).toString();
+        String filePath = UploadPathFactory.createPartPath(partInfo).toString();
         Long bytesTransferred = 0L;
 
         try (
@@ -60,15 +61,15 @@ public class UploadFileWriter {
 
         return PartInfo.builder()
                 .uploadOffset(partInfo.getUploadOffset() + bytesTransferred)
-                .uploadLength(partInfo.uploadLength)
-                .fileName(partInfo.fileName)
-                .partNumber(partInfo.partNumber)
+                .uploadLength(partInfo.getUploadLength())
+                .fileName(partInfo.getFileName())
+                .partNumber(partInfo.getPartNumber())
                 .build();
     }
 
     public Long concatenateFileParts(List<PartInfo> partInfoList) throws IOException {
         String fileName = partInfoList.get(0).getFileName();
-        String finalPath = PathFactory.createFinalPath(fileName).toString();
+        String finalPath = UploadPathFactory.createFinalPath(fileName).toString();
         Long totalBytesTransferred = 0L;
 
         try (
@@ -91,7 +92,7 @@ public class UploadFileWriter {
         return partInfo -> {
             Long bytesTransferred = 0L;
             try {
-                InputStream is = Files.newInputStream(PathFactory.createPartPath(partInfo));
+                InputStream is = Files.newInputStream(UploadPathFactory.createPartPath(partInfo));
 
                 bytesTransferred = outputStream.transferFrom(
                         Channels.newChannel(is),

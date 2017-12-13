@@ -1,8 +1,8 @@
-package com.tusspringboot.controller;
+package com.tusspringboot.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.tusspringboot.service.PartInfo;
-import com.tusspringboot.service.UploadService;
+import com.tusspringboot.upload.data.PartInfo;
+import com.tusspringboot.upload.impl.UploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

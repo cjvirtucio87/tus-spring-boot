@@ -1,5 +1,8 @@
 package com.tusspringboot.service;
 
+import com.tusspringboot.upload.data.PartInfo;
+import com.tusspringboot.upload.impl.UploadPathFactory;
+import com.tusspringboot.upload.impl.UploadFileWriter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,9 +50,9 @@ public class UploadFileWriterTest {
     public void setup() throws IOException {
         testPartInfo = PartInfo.builder().fileName(TEST_FILENAME).partNumber(0L).build();
         testPartInfoList = createPartInfoList(TEST_FILENAME, TEST_UPLOAD_PART_COUNT, TEST_UPLOAD_PART_FILESIZE);
-        testDirPath = PathFactory.createDirectoryPath(TEST_FILENAME);
-        testPartPath = PathFactory.createPartPath(testPartInfo);
-        testFinalPath = PathFactory.createFinalPath(TEST_FILENAME);
+        testDirPath = UploadPathFactory.createDirectoryPath(TEST_FILENAME);
+        testPartPath = UploadPathFactory.createPartPath(testPartInfo);
+        testFinalPath = UploadPathFactory.createFinalPath(TEST_FILENAME);
     }
 
     @Test
@@ -178,7 +181,7 @@ public class UploadFileWriterTest {
     public void tearDown() {
         testPartPath.toFile().delete();
         testPartInfoList.stream()
-                .map(PathFactory::createPartPath)
+                .map(UploadPathFactory::createPartPath)
                 .map(Path::toFile)
                 .forEach(File::delete);
         testFinalPath.toFile().delete();

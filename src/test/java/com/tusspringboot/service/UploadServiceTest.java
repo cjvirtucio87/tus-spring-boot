@@ -1,5 +1,9 @@
 package com.tusspringboot.service;
 
+import com.tusspringboot.upload.data.PartInfo;
+import com.tusspringboot.upload.impl.UploadFileReader;
+import com.tusspringboot.upload.impl.UploadFileWriter;
+import com.tusspringboot.upload.impl.UploadService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
