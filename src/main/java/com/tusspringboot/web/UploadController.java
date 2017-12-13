@@ -36,7 +36,7 @@ public class UploadController {
                 .collect(Collectors.toList());
 
         try {
-            return onExists(uploadService.mapToCurrentOffsetList(fileName, partInfoList));
+            return onExists(uploadService.getCurrentOffsets(fileName, partInfoList));
         } catch (IOException e) {
             return onNotExist(fileName);
         }
@@ -47,7 +47,7 @@ public class UploadController {
             @RequestHeader(name="fileName") String fileName
     ) {
         try {
-            return onCreateDir(uploadService.mapToDirectoryPath(fileName));
+            return onCreateDir(uploadService.getDirectoryPath(fileName));
         } catch (IOException e) {
             return onFailedCreateDir(fileName, e.getMessage());
         }
@@ -75,7 +75,7 @@ public class UploadController {
                 .build();
 
         try {
-            return onComplete(uploadService.mapToPartInfoWrittenBytes(partInfo));
+            return onComplete(uploadService.getWrittenBytes(partInfo));
         } catch (IOException e) {
             return onInterrupt(partInfo, e.getMessage());
         }
@@ -92,7 +92,7 @@ public class UploadController {
                 .collect(Collectors.toList());
 
         try {
-            return onConcatenate(uploadService.reduceToTotalBytesTransferred(partInfoList));
+            return onConcatenate(uploadService.concat(partInfoList));
         } catch (IOException e) {
             return onFailedConcatenate(fileName, e.getMessage());
         }

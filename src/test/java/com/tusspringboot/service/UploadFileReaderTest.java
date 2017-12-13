@@ -48,12 +48,12 @@ public class UploadFileReaderTest {
 
     @Test
     public void checkIfExists_ReturnTrue_OnDirectoryExists() {
-        assertTrue(uploadFileReader.checkIfExists(TEST_FILENAME));
+        assertTrue(uploadFileReader.fileExists(TEST_FILENAME));
     }
 
     @Test
     public void checkIfExists_ReturnFalse_OnDirectoryNotExist() {
-        assertFalse(uploadFileReader.checkIfExists(TEST_FILENAME + "HELLO"));
+        assertFalse(uploadFileReader.fileExists(TEST_FILENAME + "HELLO"));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class UploadFileReaderTest {
                 .uploadLength(TEST_UPLOADLENGTH)
                 .build();
 
-        assertTrue(uploadFileReader.checkIfComplete(partInfo));
+        assertTrue(uploadFileReader.isComplete(partInfo));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class UploadFileReaderTest {
                 .uploadLength(TEST_UPLOADLENGTH)
                 .build();
 
-        assertFalse(uploadFileReader.checkIfComplete(partInfo));
+        assertFalse(uploadFileReader.isComplete(partInfo));
     }
 
     @Test

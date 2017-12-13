@@ -174,7 +174,7 @@ public class UploadFileWriterTest {
 
         testPartInfoList.forEach(uploadFileWriter::writeFilePart);
 
-        assertEquals(TEST_UPLOAD_PART_COUNT * TEST_UPLOAD_PART_FILESIZE, (long) uploadFileWriter.concatenateFileParts(testPartInfoList));
+        assertEquals(TEST_UPLOAD_PART_COUNT * TEST_UPLOAD_PART_FILESIZE, (long) uploadFileWriter.concat(testPartInfoList));
     }
 
     @After

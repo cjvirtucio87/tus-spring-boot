@@ -14,11 +14,11 @@ import java.io.RandomAccessFile;
 @Slf4j
 public class UploadFileReader {
 
-    public boolean checkIfExists(String fileName) {
+    public boolean fileExists(String fileName) {
         return UploadPathFactory.createDirectoryPath(fileName).toFile().exists();
     }
 
-    public boolean checkIfComplete(PartInfo partInfo) {
+    public boolean isComplete(PartInfo partInfo) {
         return partInfo.getUploadOffset().equals(partInfo.getUploadLength());
     }
 

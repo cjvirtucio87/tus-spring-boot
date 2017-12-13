@@ -22,8 +22,8 @@ public class UploadService {
     @Autowired
     UploadFileWriter uploadFileWriter;
 
-    public List<Long> mapToCurrentOffsetList(String fileName, List<PartInfo> partInfoList) throws IOException {
-        if (!uploadFileReader.checkIfExists(fileName)) {
+    public List<Long> getCurrentOffsets(String fileName, List<PartInfo> partInfoList) throws IOException {
+        if (!uploadFileReader.fileExists(fileName)) {
             throw new IOException("No directory for file, " + fileName);
         }
 
@@ -32,22 +32,22 @@ public class UploadService {
                 .collect(Collectors.toList());
     }
 
-    public String mapToDirectoryPath(String fileName) throws IOException {
+    public String getDirectoryPath(String fileName) throws IOException {
         return uploadFileWriter.createDirectory(fileName);
     }
 
-    public PartInfo mapToPartInfoWrittenBytes(PartInfo partInfo) throws IOException {
+    public PartInfo getWrittenBytes(PartInfo partInfo) throws IOException {
         return Optional.of(partInfo)
                 .map(uploadFileWriter::writeFilePart)
-                .filter(uploadFileReader::checkIfComplete)
-                .orElseThrow(this::raiseIfIncomplete);
+                .filter(uploadFileReader::isComplete)
+                .orElseThrow(this::onIncomplete);
     }
 
-    public Long reduceToTotalBytesTransferred(List<PartInfo> partInfoList) throws IOException {
-        return uploadFileWriter.concatenateFileParts(partInfoList);
+    public Long concat(List<PartInfo> partInfoList) throws IOException {
+        return uploadFileWriter.concat(partInfoList);
     }
 
-    private IOException raiseIfIncomplete() {
+    private IOException onIncomplete() {
         return new IOException("Upload incomplete.");
     }
 }

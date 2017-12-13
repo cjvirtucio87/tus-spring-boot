@@ -67,7 +67,7 @@ public class UploadFileWriter {
                 .build();
     }
 
-    public Long concatenateFileParts(List<PartInfo> partInfoList) throws IOException {
+    public Long concat(List<PartInfo> partInfoList) throws IOException {
         String fileName = partInfoList.get(0).getFileName();
         String finalPath = UploadPathFactory.createFinalPath(fileName).toString();
         Long totalBytesTransferred = 0L;

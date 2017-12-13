@@ -42,9 +42,9 @@ public class UploadServiceTest {
 
         List<PartInfo> partInfoList = Arrays.asList(partInfo);
 
-        when(uploadFileReader.checkIfExists(anyString())).thenReturn(true);
+        when(uploadFileReader.fileExists(anyString())).thenReturn(true);
 
-        assertFalse(uploadService.mapToCurrentOffsetList(TEST_FILENAME, partInfoList).isEmpty());
+        assertFalse(uploadService.getCurrentOffsets(TEST_FILENAME, partInfoList).isEmpty());
     }
 
     @Test(expected = IOException.class)
@@ -53,23 +53,23 @@ public class UploadServiceTest {
 
         List<PartInfo> partInfoList = Arrays.asList(partInfo);
 
-        when(uploadFileReader.checkIfExists(anyString())).thenReturn(false);
+        when(uploadFileReader.fileExists(anyString())).thenReturn(false);
 
-        uploadService.mapToCurrentOffsetList(TEST_FILENAME, partInfoList);
+        uploadService.getCurrentOffsets(TEST_FILENAME, partInfoList);
     }
 
     @Test
     public void mapToDirectoryPath_ReturnDirectoryPathString_OnNotNullFilename() throws IOException {
         when(uploadFileWriter.createDirectory(anyString())).thenReturn(TEST_FILEDIR);
 
-        Assert.assertEquals(TEST_FILEDIR, uploadService.mapToDirectoryPath(TEST_FILENAME));
+        Assert.assertEquals(TEST_FILEDIR, uploadService.getDirectoryPath(TEST_FILENAME));
     }
 
     @Test(expected = IOException.class)
     public void mapToDirectoryPath_ThrowIOException_OnNullFilename() throws IOException {
         when(uploadFileWriter.createDirectory(null)).thenThrow(new IOException());
 
-        uploadService.mapToDirectoryPath(null);
+        uploadService.getDirectoryPath(null);
     }
 
     @Test
@@ -93,9 +93,9 @@ public class UploadServiceTest {
                 .build();
 
         when(uploadFileWriter.writeFilePart(partInfoInput)).thenReturn(partInfoOutput);
-        when(uploadFileReader.checkIfComplete(partInfoOutput)).thenReturn(true);
+        when(uploadFileReader.isComplete(partInfoOutput)).thenReturn(true);
 
-        Assert.assertEquals(TEST_UPLOADLENGTH, uploadService.mapToPartInfoWrittenBytes(partInfoInput).getUploadOffset());
+        Assert.assertEquals(TEST_UPLOADLENGTH, uploadService.getWrittenBytes(partInfoInput).getUploadOffset());
     }
 
     @Test(expected = IOException.class)
@@ -119,9 +119,9 @@ public class UploadServiceTest {
                 .build();
 
         when(uploadFileWriter.writeFilePart(partInfoInput)).thenReturn(partInfoOutput);
-        when(uploadFileReader.checkIfComplete(partInfoOutput)).thenReturn(false);
+        when(uploadFileReader.isComplete(partInfoOutput)).thenReturn(false);
 
-        Assert.assertEquals((Long) 2L, uploadService.mapToPartInfoWrittenBytes(partInfoInput).getUploadOffset());
+        Assert.assertEquals((Long) 2L, uploadService.getWrittenBytes(partInfoInput).getUploadOffset());
     }
 
     @Test
@@ -134,8 +134,8 @@ public class UploadServiceTest {
 
         Long sum = partInfoA.getFileSize() + partInfoB.getFileSize() + partInfoC.getFileSize();
 
-        when(uploadFileWriter.concatenateFileParts(partInfoList)).thenReturn(sum);
+        when(uploadFileWriter.concat(partInfoList)).thenReturn(sum);
 
-        Assert.assertEquals((Long) (TEST_UPLOAD_PART_FILESIZE * 3), uploadService.reduceToTotalBytesTransferred(partInfoList));
+        Assert.assertEquals((Long) (TEST_UPLOAD_PART_FILESIZE * 3), uploadService.concat(partInfoList));
     }
 }
