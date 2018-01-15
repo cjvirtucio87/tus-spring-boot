@@ -21,3 +21,4 @@ target/**/*
 
 # output of running app
 log.txt
+/target/
