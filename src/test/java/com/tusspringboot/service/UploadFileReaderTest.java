@@ -1,24 +1,30 @@
 package com.tusspringboot.service;
 
-import com.tusspringboot.upload.data.PartInfo;
-import com.tusspringboot.upload.impl.UploadPathFactory;
-import com.tusspringboot.upload.impl.UploadFileReader;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import static com.tusspringboot.util.Constants.TEST_FILENAME;
+import static com.tusspringboot.util.Constants.TEST_UPLOADLENGTH;
+import static com.tusspringboot.util.Constants.TEST_UPLOADOFFSET;
+import static com.tusspringboot.util.Constants.TEST_UPLOADOFFSET_INC_COMPLETE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static com.tusspringboot.util.Constants.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.tusspringboot.upload.data.PartInfo;
+import com.tusspringboot.upload.impl.UploadFileReader;
+import com.tusspringboot.upload.impl.UploadPathFactory;
 
 /**
  * Created by cjvirtucio on 5/29/17.
@@ -27,9 +33,9 @@ import static com.tusspringboot.util.Constants.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class UploadFileReaderTest {
-
-    @InjectMocks
-    UploadFileReader uploadFileReader;
+    
+	@Autowired
+    private UploadFileReader uploadFileReader;
 
     private PartInfo testPartInfo;
 
@@ -44,6 +50,7 @@ public class UploadFileReaderTest {
         testPartPath = UploadPathFactory.createPartPath(testPartInfo);
         Files.createDirectory(testDirPath);
         Files.createFile(testPartPath);
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test

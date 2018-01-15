@@ -1,25 +1,36 @@
 package com.tusspringboot.service;
 
-import com.tusspringboot.upload.data.PartInfo;
-import com.tusspringboot.upload.impl.UploadFileReader;
-import com.tusspringboot.upload.impl.UploadFileWriter;
-import com.tusspringboot.upload.impl.UploadService;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import static com.tusspringboot.util.Constants.TEST_FILEDIR;
+import static com.tusspringboot.util.Constants.TEST_FILENAME;
+import static com.tusspringboot.util.Constants.TEST_UPLOADLENGTH;
+import static com.tusspringboot.util.Constants.TEST_UPLOADOFFSET;
+import static com.tusspringboot.util.Constants.TEST_UPLOADOFFSET_INC;
+import static com.tusspringboot.util.Constants.TEST_UPLOADOFFSET_INC_COMPLETE;
+import static com.tusspringboot.util.Constants.TEST_UPLOAD_PART_FILESIZE;
+import static com.tusspringboot.util.Constants.TEST_USERNAME;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-import static com.tusspringboot.util.Constants.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.tusspringboot.upload.api.UploadService;
+import com.tusspringboot.upload.data.PartInfo;
+import com.tusspringboot.upload.impl.UploadFileReader;
+import com.tusspringboot.upload.impl.UploadFileWriter;
+import com.tusspringboot.upload.impl.UploadServiceImpl;
 
 /**
  * Created by cjvirtucio on 5/27/17.
@@ -27,14 +38,20 @@ import static com.tusspringboot.util.Constants.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class UploadServiceTest {
+
+    @Mock
+    private UploadFileReader uploadFileReader;
+
+    @Mock
+    private UploadFileWriter uploadFileWriter;
+    
     @InjectMocks
-    UploadService uploadService;
-
-    @Mock
-    UploadFileReader uploadFileReader;
-
-    @Mock
-    UploadFileWriter uploadFileWriter;
+    private UploadService uploadService = new UploadServiceImpl(uploadFileReader, uploadFileWriter);    
+    
+    @Before
+    public void setup() {
+    		MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void mapToCurrentOffsetList_ReturnListLong_OnFilenameExists() throws IOException {
@@ -95,7 +112,7 @@ public class UploadServiceTest {
         when(uploadFileWriter.writeFilePart(partInfoInput)).thenReturn(partInfoOutput);
         when(uploadFileReader.isComplete(partInfoOutput)).thenReturn(true);
 
-        Assert.assertEquals(TEST_UPLOADLENGTH, uploadService.getWrittenBytes(partInfoInput).getUploadOffset());
+        Assert.assertEquals(TEST_UPLOADLENGTH, uploadService.write(partInfoInput).getUploadOffset());
     }
 
     @Test(expected = IOException.class)
@@ -121,7 +138,7 @@ public class UploadServiceTest {
         when(uploadFileWriter.writeFilePart(partInfoInput)).thenReturn(partInfoOutput);
         when(uploadFileReader.isComplete(partInfoOutput)).thenReturn(false);
 
-        Assert.assertEquals((Long) 2L, uploadService.getWrittenBytes(partInfoInput).getUploadOffset());
+        Assert.assertEquals((Long) 2L, uploadService.write(partInfoInput).getUploadOffset());
     }
 
     @Test

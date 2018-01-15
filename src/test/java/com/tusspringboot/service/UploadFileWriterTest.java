@@ -1,15 +1,14 @@
 package com.tusspringboot.service;
 
-import com.tusspringboot.upload.data.PartInfo;
-import com.tusspringboot.upload.impl.UploadPathFactory;
-import com.tusspringboot.upload.impl.UploadFileWriter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import static com.tusspringboot.util.Constants.TEST_FILENAME;
+import static com.tusspringboot.util.Constants.TEST_UPLOADLENGTH;
+import static com.tusspringboot.util.Constants.TEST_UPLOADOFFSET;
+import static com.tusspringboot.util.Constants.TEST_UPLOADOFFSET_INC_COMPLETE;
+import static com.tusspringboot.util.Constants.TEST_UPLOAD_PART_COUNT;
+import static com.tusspringboot.util.Constants.TEST_UPLOAD_PART_FILESIZE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -20,10 +19,18 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static com.tusspringboot.util.Constants.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.tusspringboot.upload.data.PartInfo;
+import com.tusspringboot.upload.impl.UploadFileWriter;
+import com.tusspringboot.upload.impl.UploadPathFactory;
 
 /**
  * Created by cjvirtucio on 5/30/17.
@@ -33,8 +40,8 @@ import static com.tusspringboot.util.Constants.*;
 @SpringBootTest
 public class UploadFileWriterTest {
 
-    @InjectMocks
-    UploadFileWriter uploadFileWriter;
+    @Autowired
+    private UploadFileWriter uploadFileWriter;
 
     private PartInfo testPartInfo;
 
@@ -53,6 +60,7 @@ public class UploadFileWriterTest {
         testDirPath = UploadPathFactory.createDirectoryPath(TEST_FILENAME);
         testPartPath = UploadPathFactory.createPartPath(testPartInfo);
         testFinalPath = UploadPathFactory.createFinalPath(TEST_FILENAME);
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
