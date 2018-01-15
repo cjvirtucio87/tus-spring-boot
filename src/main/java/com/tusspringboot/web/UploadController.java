@@ -1,18 +1,24 @@
 package com.tusspringboot.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import com.tusspringboot.upload.data.PartInfo;
-import com.tusspringboot.upload.impl.UploadService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.tusspringboot.upload.api.UploadService;
+import com.tusspringboot.upload.data.PartInfo;
 
 /**
  * Created by cvirtucio on 4/18/2017.
@@ -20,7 +26,6 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "http://localhost:3000", exposedHeaders = { "fileDir", "fileName", "uploadOffset", "partNumber", "reason"})
 @Controller
 @RequestMapping("/upload")
-@Slf4j
 public class UploadController {
 
     @Autowired
@@ -75,7 +80,7 @@ public class UploadController {
                 .build();
 
         try {
-            return onComplete(uploadService.getWrittenBytes(partInfo));
+            return onComplete(uploadService.write(partInfo));
         } catch (IOException e) {
             return onInterrupt(partInfo, e.getMessage());
         }
