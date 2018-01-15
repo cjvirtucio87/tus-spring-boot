@@ -1,5 +1,6 @@
 package com.tusspringboot.upload.impl;
 
+import com.tusspringboot.upload.api.UploadService;
 import com.tusspringboot.upload.data.PartInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,20 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class UploadService {
-    @Autowired
-    UploadFileReader uploadFileReader;
+public class UploadServiceImpl implements UploadService {
 
+    private UploadFileReader uploadFileReader;
+
+    private UploadFileWriter uploadFileWriter;
+    
     @Autowired
-    UploadFileWriter uploadFileWriter;
+    public UploadServiceImpl(
+    		UploadFileReader uploadFileReader,
+    		UploadFileWriter uploadFileWriter
+    		) {
+    		this.uploadFileReader = uploadFileReader;
+    		this.uploadFileWriter = uploadFileWriter;
+    }
 
     public List<Long> getCurrentOffsets(String fileName, List<PartInfo> partInfoList) throws IOException {
         if (!uploadFileReader.fileExists(fileName)) {
@@ -36,7 +45,7 @@ public class UploadService {
         return uploadFileWriter.createDirectory(fileName);
     }
 
-    public PartInfo getWrittenBytes(PartInfo partInfo) throws IOException {
+    public PartInfo write(PartInfo partInfo) throws IOException {
         return Optional.of(partInfo)
                 .map(uploadFileWriter::writeFilePart)
                 .filter(uploadFileReader::isComplete)
