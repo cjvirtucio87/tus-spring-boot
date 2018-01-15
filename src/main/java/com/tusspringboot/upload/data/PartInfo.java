@@ -1,10 +1,9 @@
 package com.tusspringboot.upload.data;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Value;
-
 import java.io.InputStream;
+
+import lombok.Builder;
+import lombok.Value;
 
 /**
  * Created by cvirtucio on 4/20/2017.
