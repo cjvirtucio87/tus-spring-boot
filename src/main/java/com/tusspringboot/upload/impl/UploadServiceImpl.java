@@ -1,21 +1,20 @@
 package com.tusspringboot.upload.impl;
 
-import com.tusspringboot.upload.api.UploadService;
-import com.tusspringboot.upload.data.PartInfo;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.tusspringboot.upload.api.UploadService;
+import com.tusspringboot.upload.data.PartInfo;
+
 /**
  * Created by cjvirtucio on 5/27/17.
  */
 @Service
-@Slf4j
 public class UploadServiceImpl implements UploadService {
 
     private UploadFileReader uploadFileReader;
