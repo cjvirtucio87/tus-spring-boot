@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.tusspringboot.upload.api.FileInfo;
 import com.tusspringboot.upload.api.UploadService;
-import com.tusspringboot.upload.data.PartInfo;
+import com.tusspringboot.upload.impl.PartInfo;
 
 /**
  * Created by cvirtucio on 4/18/2017.

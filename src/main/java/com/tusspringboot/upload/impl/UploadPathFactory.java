@@ -1,7 +1,6 @@
 package com.tusspringboot.upload.impl;
 
 import com.tusspringboot.upload.api.FileInfo;
-import com.tusspringboot.upload.data.PartInfo;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

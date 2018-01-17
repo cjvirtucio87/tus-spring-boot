@@ -1,4 +1,4 @@
-package com.tusspringboot.upload.data;
+package com.tusspringboot.upload.impl;
 
 import java.io.InputStream;
 

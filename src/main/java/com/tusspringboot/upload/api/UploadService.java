@@ -1,9 +1,9 @@
 package com.tusspringboot.upload.api;
 
-import com.tusspringboot.upload.data.PartInfo;
-
 import java.io.IOException;
 import java.util.List;
+
+import com.tusspringboot.upload.impl.PartInfo;
 
 public interface UploadService {
   List<Long> getCurrentOffsets(String fileName, List<FileInfo> partInfoList) throws IOException;

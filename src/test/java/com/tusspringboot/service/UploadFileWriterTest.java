@@ -29,7 +29,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.tusspringboot.upload.api.FileInfo;
-import com.tusspringboot.upload.data.PartInfo;
+import com.tusspringboot.upload.impl.PartInfo;
 import com.tusspringboot.upload.impl.UploadFileWriter;
 import com.tusspringboot.upload.impl.UploadPathFactory;
 

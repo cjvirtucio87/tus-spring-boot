@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.tusspringboot.upload.api.FileInfo;
 import com.tusspringboot.upload.api.FileReader;
-import com.tusspringboot.upload.data.PartInfo;
 
 import lombok.extern.slf4j.Slf4j;
 

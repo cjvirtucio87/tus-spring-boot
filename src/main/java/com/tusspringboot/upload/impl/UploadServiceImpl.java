@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.tusspringboot.upload.api.FileInfo;
 import com.tusspringboot.upload.api.FileReader;
 import com.tusspringboot.upload.api.UploadService;
-import com.tusspringboot.upload.data.PartInfo;
 
 /**
  * Created by cjvirtucio on 5/27/17.
