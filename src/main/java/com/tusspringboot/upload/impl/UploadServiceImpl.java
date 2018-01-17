@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tusspringboot.upload.api.FileInfo;
+import com.tusspringboot.upload.api.FileReader;
 import com.tusspringboot.upload.api.UploadService;
 import com.tusspringboot.upload.data.PartInfo;
 
@@ -17,7 +19,7 @@ import com.tusspringboot.upload.data.PartInfo;
 @Service
 public class UploadServiceImpl implements UploadService {
 
-    private UploadFileReader uploadFileReader;
+    private FileReader uploadFileReader;
 
     private UploadFileWriter uploadFileWriter;
     
@@ -30,13 +32,13 @@ public class UploadServiceImpl implements UploadService {
     		this.uploadFileWriter = uploadFileWriter;
     }
 
-    public List<Long> getCurrentOffsets(String fileName, List<PartInfo> partInfoList) throws IOException {
+    public List<Long> getCurrentOffsets(String fileName, List<FileInfo> partInfoList) throws IOException {
         if (!uploadFileReader.fileExists(fileName)) {
             throw new IOException("No directory for file, " + fileName);
         }
 
         return partInfoList.stream()
-                .map(uploadFileReader::getCurrentOffset)
+                .map(uploadFileReader::getOffset)
                 .collect(Collectors.toList());
     }
 
@@ -44,14 +46,14 @@ public class UploadServiceImpl implements UploadService {
         return uploadFileWriter.createDirectory(fileName);
     }
 
-    public PartInfo write(PartInfo partInfo) throws IOException {
+    public PartInfo write(FileInfo partInfo) throws IOException {
         return Optional.of(partInfo)
-                .map(uploadFileWriter::writeFilePart)
+                .map(uploadFileWriter::write)
                 .filter(uploadFileReader::isComplete)
                 .orElseThrow(this::onIncomplete);
     }
 
-    public Long concat(List<PartInfo> partInfoList) throws IOException {
+    public Long concat(List<FileInfo> partInfoList) throws IOException {
         return uploadFileWriter.concat(partInfoList);
     }
 

@@ -1,29 +1,33 @@
 package com.tusspringboot.upload.impl;
 
-import com.tusspringboot.upload.data.PartInfo;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
+import org.springframework.stereotype.Service;
+
+import com.tusspringboot.upload.api.FileInfo;
+import com.tusspringboot.upload.api.FileReader;
+import com.tusspringboot.upload.data.PartInfo;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by cjvirtucio on 5/29/17.
  */
 @Service
 @Slf4j
-public class UploadFileReader {
+public class UploadFileReader implements FileReader {
 
     public boolean fileExists(String fileName) {
         return UploadPathFactory.createDirectoryPath(fileName).toFile().exists();
     }
 
-    public boolean isComplete(PartInfo partInfo) {
-        return partInfo.getUploadOffset().equals(partInfo.getUploadLength());
+    public boolean isComplete(FileInfo partInfo) {
+        return partInfo.getOffset().equals(partInfo.getLength());
     }
 
-    public Long getCurrentOffset(PartInfo partInfo) {
-        String filePath = UploadPathFactory.createPartPath(partInfo).toString();
+    public Long getOffset(FileInfo partInfo) {
+        String filePath = UploadPathFactory.createPartPath((PartInfo) partInfo).toString();
         log.info("Retrieving pointer for file part, " + filePath);
         Long currentOffset = 0L;
 

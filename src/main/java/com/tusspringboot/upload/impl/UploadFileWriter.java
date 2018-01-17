@@ -1,9 +1,5 @@
 package com.tusspringboot.upload.impl;
 
-import com.tusspringboot.upload.data.PartInfo;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -15,13 +11,21 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.ToLongFunction;
 
+import org.springframework.stereotype.Service;
+
+import com.tusspringboot.upload.api.FileInfo;
+import com.tusspringboot.upload.api.FileWriter;
+import com.tusspringboot.upload.data.PartInfo;
+
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by cjvirtucio on 5/29/17.
  */
 
 @Service
 @Slf4j
-public class UploadFileWriter {
+public class UploadFileWriter implements FileWriter {
 
     public String createDirectory(String fileName) throws IOException {
         if (fileName == null) {
@@ -34,8 +38,8 @@ public class UploadFileWriter {
         return path.toString();
     }
 
-    public PartInfo writeFilePart(PartInfo partInfo) {
-        String filePath = UploadPathFactory.createPartPath(partInfo).toString();
+    public PartInfo write(FileInfo partInfo) {
+        String filePath = UploadPathFactory.createPartPath((PartInfo) partInfo).toString();
         Long bytesTransferred = 0L;
 
         try (
@@ -45,7 +49,7 @@ public class UploadFileWriter {
         ) {
             log.info("Opening channels for file part, " + filePath);
             log.info("Writing file part, " + filePath);
-            Long bytesToTransfer = (partInfo.getUploadLength() - partInfo.getUploadOffset());
+            Long bytesToTransfer = (partInfo.getLength() - partInfo.getOffset());
 
             if (bytesToTransfer > 0) {
                 bytesTransferred = os.transferFrom(is, os.size(), bytesToTransfer);
@@ -60,14 +64,14 @@ public class UploadFileWriter {
         }
 
         return PartInfo.builder()
-                .uploadOffset(partInfo.getUploadOffset() + bytesTransferred)
-                .uploadLength(partInfo.getUploadLength())
+                .offset(partInfo.getOffset() + bytesTransferred)
+                .length(partInfo.getLength())
                 .fileName(partInfo.getFileName())
-                .partNumber(partInfo.getPartNumber())
+                .partNumber(((PartInfo) partInfo).getPartNumber())
                 .build();
     }
 
-    public Long concat(List<PartInfo> partInfoList) throws IOException {
+    public Long concat(List<FileInfo> partInfoList) throws IOException {
         String fileName = partInfoList.get(0).getFileName();
         String finalPath = UploadPathFactory.createFinalPath(fileName).toString();
         Long totalBytesTransferred = 0L;
@@ -88,11 +92,11 @@ public class UploadFileWriter {
         return totalBytesTransferred;
     }
 
-    private ToLongFunction<PartInfo> toBytesTransferred(FileChannel outputStream) {
+    private ToLongFunction<FileInfo> toBytesTransferred(FileChannel outputStream) {
         return partInfo -> {
             Long bytesTransferred = 0L;
             try {
-                InputStream is = Files.newInputStream(UploadPathFactory.createPartPath(partInfo));
+                InputStream is = Files.newInputStream(UploadPathFactory.createPartPath((PartInfo) partInfo));
 
                 bytesTransferred = outputStream.transferFrom(
                         Channels.newChannel(is),

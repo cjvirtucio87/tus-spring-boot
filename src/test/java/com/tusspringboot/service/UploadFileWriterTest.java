@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.tusspringboot.upload.api.FileInfo;
 import com.tusspringboot.upload.data.PartInfo;
 import com.tusspringboot.upload.impl.UploadFileWriter;
 import com.tusspringboot.upload.impl.UploadPathFactory;
@@ -45,7 +46,7 @@ public class UploadFileWriterTest {
 
     private PartInfo testPartInfo;
 
-    List<PartInfo> testPartInfoList;
+    List<FileInfo> testPartInfoList;
 
     private Path testDirPath;
 
@@ -95,11 +96,11 @@ public class UploadFileWriterTest {
                 .inputStream(is)
                 .fileName(TEST_FILENAME)
                 .partNumber(0L)
-                .uploadOffset(TEST_UPLOADOFFSET)
-                .uploadLength(TEST_UPLOADLENGTH)
+                .offset(TEST_UPLOADOFFSET)
+                .length(TEST_UPLOADLENGTH)
                 .build();
 
-        uploadFileWriter.writeFilePart(partInfoInput);
+        uploadFileWriter.write(partInfoInput);
 
         assertTrue(testPartPath.toFile().exists());
     }
@@ -114,11 +115,11 @@ public class UploadFileWriterTest {
                 .inputStream(is)
                 .fileName(TEST_FILENAME)
                 .partNumber(0L)
-                .uploadOffset(TEST_UPLOADOFFSET)
-                .uploadLength(TEST_UPLOADLENGTH)
+                .offset(TEST_UPLOADOFFSET)
+                .length(TEST_UPLOADLENGTH)
                 .build();
 
-        uploadFileWriter.writeFilePart(partInfoInput);
+        uploadFileWriter.write(partInfoInput);
 
         assertEquals((long) TEST_UPLOADLENGTH, testPartPath.toFile().length());
     }
@@ -133,11 +134,11 @@ public class UploadFileWriterTest {
                 .inputStream(is)
                 .fileName(TEST_FILENAME)
                 .partNumber(0L)
-                .uploadOffset(TEST_UPLOADOFFSET + TEST_UPLOADOFFSET_INC_COMPLETE)
-                .uploadLength(TEST_UPLOADLENGTH)
+                .offset(TEST_UPLOADOFFSET + TEST_UPLOADOFFSET_INC_COMPLETE)
+                .length(TEST_UPLOADLENGTH)
                 .build();
 
-        uploadFileWriter.writeFilePart(partInfoInput);
+        uploadFileWriter.write(partInfoInput);
 
         assertEquals(0L, testPartPath.toFile().length());
     }
@@ -152,11 +153,11 @@ public class UploadFileWriterTest {
                 .inputStream(is)
                 .fileName(TEST_FILENAME)
                 .partNumber(0L)
-                .uploadOffset(TEST_UPLOADOFFSET)
-                .uploadLength(TEST_UPLOADLENGTH)
+                .offset(TEST_UPLOADOFFSET)
+                .length(TEST_UPLOADLENGTH)
                 .build();
 
-        assertEquals(TEST_UPLOADLENGTH, uploadFileWriter.writeFilePart(partInfoInput).getUploadOffset());
+        assertEquals(TEST_UPLOADLENGTH, uploadFileWriter.write(partInfoInput).getOffset());
     }
 
     @Test
@@ -169,18 +170,18 @@ public class UploadFileWriterTest {
                 .inputStream(is)
                 .fileName(TEST_FILENAME)
                 .partNumber(0L)
-                .uploadOffset(TEST_UPLOADOFFSET + TEST_UPLOADOFFSET_INC_COMPLETE)
-                .uploadLength(TEST_UPLOADLENGTH)
+                .offset(TEST_UPLOADOFFSET + TEST_UPLOADOFFSET_INC_COMPLETE)
+                .length(TEST_UPLOADLENGTH)
                 .build();
 
-        assertEquals(partInfoInput.getUploadOffset(), uploadFileWriter.writeFilePart(partInfoInput).getUploadOffset());
+        assertEquals(partInfoInput.getOffset(), uploadFileWriter.write(partInfoInput).getOffset());
     }
 
     @Test
     public void concatenateFileParts_ReturnTotalBytesTransferred_OnPartInfoList() throws IOException {
         Files.createDirectory(testDirPath);
 
-        testPartInfoList.forEach(uploadFileWriter::writeFilePart);
+        testPartInfoList.forEach(uploadFileWriter::write);
 
         assertEquals(TEST_UPLOAD_PART_COUNT * TEST_UPLOAD_PART_FILESIZE, (long) uploadFileWriter.concat(testPartInfoList));
     }
@@ -210,15 +211,15 @@ public class UploadFileWriterTest {
         return output;
     }
 
-    private List<PartInfo> createPartInfoList(String uploadFilename, Long uploadPartCount, Long uploadPartFileSize) {
-        List<PartInfo> output = new ArrayList<>();
+    private List<FileInfo> createPartInfoList(String uploadFilename, Long uploadPartCount, Long uploadPartFileSize) {
+        List<FileInfo> output = new ArrayList<>();
 
         for (long i = 0; i < uploadPartCount; i++) {
             output.add(PartInfo.builder()
                     .fileName(uploadFilename)
                     .partNumber(i)
-                    .uploadOffset(i > 0 ? ( ( uploadPartCount * uploadPartFileSize ) * ( i  /  uploadPartCount ) + 1   ) :  ( ( uploadPartCount * uploadPartFileSize ) * ( i  /  uploadPartCount ) ))
-                    .uploadLength( ( uploadPartCount * uploadPartFileSize ) * ( i + 1 ) / uploadPartCount)
+                    .offset(i > 0 ? ( ( uploadPartCount * uploadPartFileSize ) * ( i  /  uploadPartCount ) + 1   ) :  ( ( uploadPartCount * uploadPartFileSize ) * ( i  /  uploadPartCount ) ))
+                    .length( ( uploadPartCount * uploadPartFileSize ) * ( i + 1 ) / uploadPartCount)
                     .fileSize(uploadPartFileSize)
                     .inputStream(createTestInputStream(createTestByteArray(uploadPartFileSize)))
                     .build()

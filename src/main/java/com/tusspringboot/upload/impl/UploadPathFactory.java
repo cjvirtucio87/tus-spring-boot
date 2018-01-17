@@ -1,5 +1,6 @@
 package com.tusspringboot.upload.impl;
 
+import com.tusspringboot.upload.api.FileInfo;
 import com.tusspringboot.upload.data.PartInfo;
 
 import java.nio.file.Path;
@@ -16,11 +17,11 @@ public class UploadPathFactory {
         return Paths.get(TMP_DIR, fileName);
     }
 
-    public static Path createPartPath(PartInfo partInfo) {
+    public static Path createPartPath(FileInfo partInfo) {
         return Paths.get(
                 System.getProperty("java.io.tmpdir"),
                 partInfo.getFileName(),
-                partInfo.getFileName() + "_" + partInfo.getPartNumber()
+                partInfo.getFileName() + "_" + ((PartInfo) partInfo).getPartNumber()
         );
     }
 

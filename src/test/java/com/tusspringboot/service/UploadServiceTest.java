@@ -26,6 +26,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.tusspringboot.upload.api.FileInfo;
 import com.tusspringboot.upload.api.UploadService;
 import com.tusspringboot.upload.data.PartInfo;
 import com.tusspringboot.upload.impl.UploadFileReader;
@@ -57,7 +58,7 @@ public class UploadServiceTest {
     public void mapToCurrentOffsetList_ReturnListLong_OnFilenameExists() throws IOException {
         PartInfo partInfo = PartInfo.builder().build();
 
-        List<PartInfo> partInfoList = Arrays.asList(partInfo);
+        List<FileInfo> partInfoList = Arrays.asList(partInfo);
 
         when(uploadFileReader.fileExists(anyString())).thenReturn(true);
 
@@ -68,7 +69,7 @@ public class UploadServiceTest {
     public void mapToCurrentOffsetList_ThrowIOException_OnFilenameNotExist() throws IOException {
         PartInfo partInfo = PartInfo.builder().build();
 
-        List<PartInfo> partInfoList = Arrays.asList(partInfo);
+        List<FileInfo> partInfoList = Arrays.asList(partInfo);
 
         when(uploadFileReader.fileExists(anyString())).thenReturn(false);
 
@@ -95,8 +96,8 @@ public class UploadServiceTest {
                 .fileSize(5L)
                 .fileName(TEST_FILENAME)
                 .partNumber(0L)
-                .uploadOffset(TEST_UPLOADOFFSET)
-                .uploadLength(TEST_UPLOADLENGTH)
+                .offset(TEST_UPLOADOFFSET)
+                .length(TEST_UPLOADLENGTH)
                 .userName(TEST_USERNAME)
                 .build();
 
@@ -104,15 +105,15 @@ public class UploadServiceTest {
                 .fileSize(5L)
                 .fileName(TEST_FILENAME)
                 .partNumber(0L)
-                .uploadOffset(partInfoInput.getUploadOffset() + TEST_UPLOADOFFSET_INC_COMPLETE)
-                .uploadLength(TEST_UPLOADLENGTH)
+                .offset(partInfoInput.getOffset() + TEST_UPLOADOFFSET_INC_COMPLETE)
+                .length(TEST_UPLOADLENGTH)
                 .userName(TEST_USERNAME)
                 .build();
 
-        when(uploadFileWriter.writeFilePart(partInfoInput)).thenReturn(partInfoOutput);
+        when(uploadFileWriter.write(partInfoInput)).thenReturn(partInfoOutput);
         when(uploadFileReader.isComplete(partInfoOutput)).thenReturn(true);
 
-        Assert.assertEquals(TEST_UPLOADLENGTH, uploadService.write(partInfoInput).getUploadOffset());
+        Assert.assertEquals(TEST_UPLOADLENGTH, uploadService.write(partInfoInput).getOffset());
     }
 
     @Test(expected = IOException.class)
@@ -121,8 +122,8 @@ public class UploadServiceTest {
                 .fileSize(5L)
                 .fileName(TEST_FILENAME)
                 .partNumber(0L)
-                .uploadOffset(TEST_UPLOADOFFSET)
-                .uploadLength(TEST_UPLOADLENGTH)
+                .offset(TEST_UPLOADOFFSET)
+                .length(TEST_UPLOADLENGTH)
                 .userName(TEST_USERNAME)
                 .build();
 
@@ -130,24 +131,24 @@ public class UploadServiceTest {
                 .fileSize(5L)
                 .fileName(TEST_FILENAME)
                 .partNumber(0L)
-                .uploadOffset(partInfoInput.getUploadOffset() + TEST_UPLOADOFFSET_INC)
-                .uploadLength(5L)
+                .offset(partInfoInput.getOffset() + TEST_UPLOADOFFSET_INC)
+                .length(5L)
                 .userName(TEST_USERNAME)
                 .build();
 
-        when(uploadFileWriter.writeFilePart(partInfoInput)).thenReturn(partInfoOutput);
+        when(uploadFileWriter.write(partInfoInput)).thenReturn(partInfoOutput);
         when(uploadFileReader.isComplete(partInfoOutput)).thenReturn(false);
 
-        Assert.assertEquals((Long) 2L, uploadService.write(partInfoInput).getUploadOffset());
+        Assert.assertEquals((Long) 2L, uploadService.write(partInfoInput).getOffset());
     }
 
     @Test
     public void reduceToTotalBytesTransferred_ReturnLong_OnPartInfoList() throws IOException {
-        PartInfo partInfoA = PartInfo.builder().fileSize(TEST_UPLOAD_PART_FILESIZE).build();
-        PartInfo partInfoB = PartInfo.builder().fileSize(TEST_UPLOAD_PART_FILESIZE).build();
-        PartInfo partInfoC = PartInfo.builder().fileSize(TEST_UPLOAD_PART_FILESIZE).build();
+        FileInfo partInfoA = PartInfo.builder().fileSize(TEST_UPLOAD_PART_FILESIZE).build();
+        FileInfo partInfoB = PartInfo.builder().fileSize(TEST_UPLOAD_PART_FILESIZE).build();
+        FileInfo partInfoC = PartInfo.builder().fileSize(TEST_UPLOAD_PART_FILESIZE).build();
 
-        List<PartInfo> partInfoList = Arrays.asList(partInfoA, partInfoB, partInfoC);
+        List<FileInfo> partInfoList = Arrays.asList(partInfoA, partInfoB, partInfoC);
 
         Long sum = partInfoA.getFileSize() + partInfoB.getFileSize() + partInfoC.getFileSize();
 

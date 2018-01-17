@@ -2,6 +2,8 @@ package com.tusspringboot.upload.data;
 
 import java.io.InputStream;
 
+import com.tusspringboot.upload.api.FileInfo;
+
 import lombok.Builder;
 import lombok.Value;
 
@@ -11,11 +13,11 @@ import lombok.Value;
 
 @Builder
 @Value
-public class PartInfo {
+public class PartInfo implements FileInfo {
     private String fileName;
     private Long partNumber;
-    private Long uploadOffset;
-    private Long uploadLength;
+    private Long offset;
+    private Long length;
     private Long fileSize;
     private String userName;
     private InputStream inputStream;

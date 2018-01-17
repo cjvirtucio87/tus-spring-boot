@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.tusspringboot.upload.api.FileInfo;
 import com.tusspringboot.upload.api.UploadService;
 import com.tusspringboot.upload.data.PartInfo;
 
@@ -36,7 +37,7 @@ public class UploadController {
             @RequestHeader(name="fileName") String fileName,
             @RequestHeader(name="partNumbers") List<Long> partNumbers
     ) {
-        List<PartInfo> partInfoList = partNumbers.stream()
+        List<FileInfo> partInfoList = partNumbers.stream()
                 .map(num -> PartInfo.builder().fileName(fileName).partNumber(num).build())
                 .collect(Collectors.toList());
 
@@ -73,8 +74,8 @@ public class UploadController {
                 .fileSize(fileSize)
                 .fileName(fileName)
                 .partNumber(partNumber)
-                .uploadOffset(uploadOffset)
-                .uploadLength(uploadLength)
+                .offset(uploadOffset)
+                .length(uploadLength)
                 .userName(userName)
                 .inputStream(inputStream)
                 .build();
@@ -92,7 +93,7 @@ public class UploadController {
             @RequestHeader(name="partNumbers") List<Long> partNumbers,
             @RequestHeader(name="fileSize") Long fileSize
     ) {
-        List<PartInfo> partInfoList = partNumbers.stream()
+        List<FileInfo> partInfoList = partNumbers.stream()
                 .map(partNumber -> PartInfo.builder().fileName(fileName).partNumber(partNumber).fileSize(fileSize).build())
                 .collect(Collectors.toList());
 
@@ -141,7 +142,7 @@ public class UploadController {
 
     private ResponseEntity onComplete(PartInfo partInfo) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header("newOffset", partInfo.getUploadOffset().toString())
+                .header("newOffset", partInfo.getOffset().toString())
                 .build();
     }
 

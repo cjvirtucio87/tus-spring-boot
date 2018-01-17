@@ -16,7 +16,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -66,8 +65,8 @@ public class UploadFileReaderTest {
     @Test
     public void checkIfComplete_ReturnTrue_OnOffsetMatchesLength() {
         PartInfo partInfo = PartInfo.builder()
-                .uploadOffset(TEST_UPLOADOFFSET + TEST_UPLOADOFFSET_INC_COMPLETE)
-                .uploadLength(TEST_UPLOADLENGTH)
+                .offset(TEST_UPLOADOFFSET + TEST_UPLOADOFFSET_INC_COMPLETE)
+                .length(TEST_UPLOADLENGTH)
                 .build();
 
         assertTrue(uploadFileReader.isComplete(partInfo));
@@ -76,8 +75,8 @@ public class UploadFileReaderTest {
     @Test
     public void checkIfComplete_ReturnFalse_OnOffsetLessThanLength() {
         PartInfo partInfo = PartInfo.builder()
-                .uploadOffset(TEST_UPLOADOFFSET)
-                .uploadLength(TEST_UPLOADLENGTH)
+                .offset(TEST_UPLOADOFFSET)
+                .length(TEST_UPLOADLENGTH)
                 .build();
 
         assertFalse(uploadFileReader.isComplete(partInfo));
@@ -90,7 +89,7 @@ public class UploadFileReaderTest {
                 .partNumber(0L)
                 .build();
 
-        assertEquals(0L, (long) uploadFileReader.getCurrentOffset(partInfo));
+        assertEquals(0L, (long) uploadFileReader.getOffset(partInfo));
     }
 
     @Test
@@ -104,7 +103,7 @@ public class UploadFileReaderTest {
 
         Files.write(testPartPath, byteArray);
 
-        assertEquals(byteArray.length, (long) uploadFileReader.getCurrentOffset(partInfo));
+        assertEquals(byteArray.length, (long) uploadFileReader.getOffset(partInfo));
     }
 
     @After
