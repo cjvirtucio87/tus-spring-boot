@@ -7,7 +7,7 @@ if [ $? = 0 ]; then
   docker build -t tus-spring-boot .
   echo "Done."
   echo "Running tus-spring-boot. Cheers!"
-  docker run -p 8080:8080 -t tus-spring-boot
+  docker run -p 8080:8080 -t --name=tus-spring-boot tus-spring-boot
 else
   echo "Docker not detected." 
   echo "Running the app with good ol' java. Enjoy!"

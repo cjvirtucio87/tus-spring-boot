@@ -2,26 +2,30 @@ LABEL maintainer="cjvirtucio87"
 LABEL version="1.0"
 LABEL description="Dockerfile for running a containerized TusSpringBoot application."
 
-FROM node:latest AS assets
-WORKDIR /usr/git/cjvirtucio-tus-spring-boot/src/client/
+ARG APP_CLIENT_DIR=/app_client
+ARG APP_SERVER_DIR=/app_server 
+ARG MVN_DOCKER_SETTINGS_DIR=/usr/share/maven/ref/settings-docker.xml
+
+FROM node:latest AS app_client
+WORKDIR $APP_CLIENT_DIR
 COPY src/client/ .
 RUN npm install
 RUN npm run build
 
 FROM maven:latest AS app
-WORKDIR /usr/git/cjvirtucio-tus-spring-boot/
+WORKDIR $APP_SERVER_DIR 
 COPY pom.xml .
 RUN mvn -B -f pom.xml \
-    -s /usr/share/maven/ref/settings-docker.xml \
+    -s $MVN_DOCKER_SETTINGS_DIR \ 
     dependency:resolve
 COPY src/main/java/ src/main/java/
-COPY --from=assets /usr/git/cjvirtucio-tus-spring-boot/src/client/build/ src/main/resources/public/
+COPY --from=app_client $APP_CLIENT_DIR/build/ src/main/resources/public/
 RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml \
     package
 
 FROM java:8-jdk-alpine
 WORKDIR /app
-COPY --from=app /usr/git/cjvirtucio-tus-spring-boot/target/tus-spring-boot-1.0-SNAPSHOT.jar .
+COPY --from=app $APP_SERVER_DIR/target/tus-spring-boot-1.0-SNAPSHOT.jar .
 
 EXPOSE 8080
 
