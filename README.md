@@ -21,6 +21,6 @@ To run the application, enter `mvn clean install && mvn spring-boot:run`. The ap
 - Authentication
 - Persisting historical data about uploads
 - Deployment
-- ~~Docker integration.~~ (unnecessary; maven is sufficient for my needs)
+- ~~Docker integration.~~
 - ~~Unit Tests.~~
 - ~~Refactor most logic into a singleton.~~
