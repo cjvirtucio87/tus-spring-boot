@@ -1,9 +1,3 @@
-# from the node image,
-# set workdir as src/client
-# run npm install 
-# run npm run build
-
-
 FROM node:latest AS assets
 WORKDIR /usr/git/cjvirtucio-tus-spring-boot/src/client/
 COPY src/client/ .
