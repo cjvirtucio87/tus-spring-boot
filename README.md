@@ -13,6 +13,7 @@ To run the application, enter `mvn clean install && mvn spring-boot:run`. The ap
 - Toggle between single stream and chunked uploads.
 - Progress table.
 - Fault-tolerant; can resume upload even after restarting your machine.
+- Containerization.
 
 #### TODOs
 
