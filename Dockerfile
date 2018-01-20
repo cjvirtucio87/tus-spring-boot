@@ -1,3 +1,7 @@
+LABEL maintainer="cjvirtucio87"
+LABEL version="1.0"
+LABEL description="Dockerfile for running a containerized TusSpringBoot application."
+
 FROM node:latest AS assets
 WORKDIR /usr/git/cjvirtucio-tus-spring-boot/src/client/
 COPY src/client/ .
