@@ -7,6 +7,8 @@ Clone this repo.
 
 To run the application, run `./init.sh`. The application will be hosted on `localhost:8080`. Upload a file, then close your browser (or even restart your machine!) before it hits 100%. When you try to upload the same file, the upload process will pick up where it left off.
 
+_NOTE: If you're behind a corporate firewall, set the HTTP_PROXY and HTTP_PROXY_PORT environment variables_
+
 #### CURRENT FEATURES
 
 - Chunk-based upload.
