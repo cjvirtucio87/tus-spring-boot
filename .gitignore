@@ -15,7 +15,7 @@ src/client/src/**/*.js
 src/client/src/**/*.js.map
 
 # will be built by client-side compilation
-src/main/resources/public/**
+src/main/resources/public/
 
 # output of java compilation
 target/**/*
