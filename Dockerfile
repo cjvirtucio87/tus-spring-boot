@@ -4,9 +4,9 @@ ARG HTTP_PROXY_PORT
 FROM node:latest AS app_client
 WORKDIR /app_client
 COPY src/client/ .
-RUN npm config set proxy $HTTP_PROXY:$HTTP_PROXY_PORT
-RUN npm install
-RUN npm run build
+RUN npm config set proxy $HTTP_PROXY:$HTTP_PROXY_PORT && \
+    npm install && \
+    npm run build
 
 FROM maven:latest AS app_server
 WORKDIR /app_server
