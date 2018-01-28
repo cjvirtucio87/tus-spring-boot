@@ -55,7 +55,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void mapToCurrentOffsetList_ReturnListLong_OnFilenameExists() throws IOException {
+    public void TestGetCurrentOffsets_ReturnListLong_OnFilenameExists() throws IOException {
         PartInfo partInfo = PartInfo.builder().build();
 
         List<FileInfo> partInfoList = Arrays.asList(partInfo);
@@ -66,7 +66,7 @@ public class UploadServiceTest {
     }
 
     @Test(expected = IOException.class)
-    public void mapToCurrentOffsetList_ThrowIOException_OnFilenameNotExist() throws IOException {
+    public void TestGetCurrentOffsets_ThrowIOException_OnFilenameNotExist() throws IOException {
         PartInfo partInfo = PartInfo.builder().build();
 
         List<FileInfo> partInfoList = Arrays.asList(partInfo);
@@ -77,21 +77,21 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void mapToDirectoryPath_ReturnDirectoryPathString_OnNotNullFilename() throws IOException {
+    public void TestGetDirectoryPath_ReturnDirectoryPathString_OnNotNullFilename() throws IOException {
         when(uploadFileWriter.createDirectory(anyString())).thenReturn(TEST_FILEDIR);
 
         Assert.assertEquals(TEST_FILEDIR, uploadService.getDirectoryPath(TEST_FILENAME));
     }
 
     @Test(expected = IOException.class)
-    public void mapToDirectoryPath_ThrowIOException_OnNullFilename() throws IOException {
+    public void TestGetDirectoryPath_ThrowIOException_OnNullFilename() throws IOException {
         when(uploadFileWriter.createDirectory(null)).thenThrow(new IOException());
 
         uploadService.getDirectoryPath(null);
     }
 
     @Test
-    public void mapToPartInfoWrittenBytes_ReturnPartInfoWithWrittenBytes_OnCompleteUpload() throws IOException {
+    public void TestWrite_ReturnPartInfoWithWrittenBytes_OnCompleteUpload() throws IOException {
         PartInfo partInfoInput = PartInfo.builder()
                 .fileSize(5L)
                 .fileName(TEST_FILENAME)
@@ -117,7 +117,7 @@ public class UploadServiceTest {
     }
 
     @Test(expected = IOException.class)
-    public void mapToPartInfoWrittenBytes_ThrowIOException_OnIncompleteUpload() throws IOException {
+    public void TestWrite_ThrowIOException_OnIncompleteUpload() throws IOException {
         PartInfo partInfoInput = PartInfo.builder()
                 .fileSize(5L)
                 .fileName(TEST_FILENAME)
@@ -143,7 +143,7 @@ public class UploadServiceTest {
     }
 
     @Test
-    public void reduceToTotalBytesTransferred_ReturnLong_OnPartInfoList() throws IOException {
+    public void TestConcat_ReturnLong_OnPartInfoList() throws IOException {
         FileInfo partInfoA = PartInfo.builder().fileSize(TEST_UPLOAD_PART_FILESIZE).build();
         FileInfo partInfoB = PartInfo.builder().fileSize(TEST_UPLOAD_PART_FILESIZE).build();
         FileInfo partInfoC = PartInfo.builder().fileSize(TEST_UPLOAD_PART_FILESIZE).build();
