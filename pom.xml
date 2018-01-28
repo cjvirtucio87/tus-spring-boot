@@ -77,7 +77,6 @@
                 <!-- This plugin allows you to package Spring Boot-based jar or war file, allowing you to run an application in place. -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>1.5.3.RELEASE</version>
                 <executions>
                     <execution>
                         <goals>
