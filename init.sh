@@ -99,6 +99,9 @@ function main {
       if [ ! -f "$jar_path" ]; then
         echo "Creating build for first-time run."
         opt="--clean-all"
+      elif [ "$opt" == "--clean-mvn" ]; then
+        echo "No client code in the resources folder. Building client code, first."
+        opt="--clean-all"
       fi
     fi
 
