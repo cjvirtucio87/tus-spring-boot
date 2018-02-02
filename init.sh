@@ -77,7 +77,7 @@ function main {
 
   which docker > /dev/null
   
-  if [ $? != 0 ]; then
+  if [ $? = 0 ]; then
     echo "Docker detected." 
     echo "Building image."
     build_image
