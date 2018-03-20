@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.tusspringboot.upload.api.FileInfo;
 import com.tusspringboot.upload.api.FileReader;
+import com.tusspringboot.util.PathFactory;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UploadFileReader implements FileReader {
 
     public boolean fileExists(String fileName) {
-        return UploadPathFactory.createDirectoryPath(fileName).toFile().exists();
+        return PathFactory.createDirectoryPath(fileName).toFile().exists();
     }
 
     public boolean isComplete(FileInfo partInfo) {
@@ -26,7 +28,7 @@ public class UploadFileReader implements FileReader {
     }
 
     public Long getOffset(FileInfo partInfo) {
-        String filePath = UploadPathFactory.createPartPath((PartInfo) partInfo).toString();
+        String filePath = PathFactory.createPartPath((PartInfo) partInfo).toString();
         log.info("Retrieving pointer for file part, " + filePath);
         Long currentOffset = 0L;
 

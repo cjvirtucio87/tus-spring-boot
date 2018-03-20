@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import com.tusspringboot.upload.api.FileInfo;
 import com.tusspringboot.upload.api.FileWriter;
+import com.tusspringboot.util.PathFactory;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,14 +33,14 @@ public class UploadFileWriter implements FileWriter {
             throw new IOException("Cannot create directory for a null filename!");
         }
 
-        Path path = UploadPathFactory.createDirectoryPath(fileName);
+        Path path = PathFactory.createDirectoryPath(fileName);
         Files.createDirectory(path);
         log.info("Created file directory, " + path.toString());
         return path.toString();
     }
 
     public PartInfo write(FileInfo partInfo) {
-        String filePath = UploadPathFactory.createPartPath((PartInfo) partInfo).toString();
+        String filePath = PathFactory.createPartPath((PartInfo) partInfo).toString();
         Long bytesTransferred = 0L;
 
         try (
@@ -72,7 +74,7 @@ public class UploadFileWriter implements FileWriter {
 
     public Long concat(List<FileInfo> partInfoList) throws IOException {
         String fileName = partInfoList.get(0).getFileName();
-        String finalPath = UploadPathFactory.createFinalPath(fileName).toString();
+        String finalPath = PathFactory.createFinalPath(fileName).toString();
         Long totalBytesTransferred = 0L;
 
         try (
@@ -95,7 +97,7 @@ public class UploadFileWriter implements FileWriter {
         return partInfo -> {
             Long bytesTransferred = 0L;
             try {
-                InputStream is = Files.newInputStream(UploadPathFactory.createPartPath((PartInfo) partInfo));
+                InputStream is = Files.newInputStream(PathFactory.createPartPath((PartInfo) partInfo));
 
                 bytesTransferred = outputStream.transferFrom(
                         Channels.newChannel(is),

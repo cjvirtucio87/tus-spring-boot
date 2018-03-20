@@ -1,6 +1,8 @@
-package com.tusspringboot.upload.impl;
+package com.tusspringboot.util;
 
 import com.tusspringboot.upload.api.FileInfo;
+import com.tusspringboot.upload.impl.PartInfo;
+
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,7 +12,7 @@ import static com.tusspringboot.util.Constants.TMP_DIR;
 /**
  * Created by cjvirtucio on 5/29/17.
  */
-public class UploadPathFactory {
+public class PathFactory {
 
     public static Path createDirectoryPath(String fileName) {
         return Paths.get(TMP_DIR, fileName);
@@ -28,6 +30,6 @@ public class UploadPathFactory {
         return Paths.get(TMP_DIR, fileName, fileName);
     }
 
-    protected UploadPathFactory() {
+    protected PathFactory() {
     }
 }
