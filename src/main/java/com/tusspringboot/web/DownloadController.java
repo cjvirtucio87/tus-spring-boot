@@ -4,8 +4,9 @@ import java.io.IOException;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,15 +30,18 @@ public class DownloadController {
             @RequestHeader(name="fileName") String fileName
     ) {
        try {
-           return onExists( downloadService.stream( fileName ) );
+           return onExists( downloadService.stream( fileName ), fileName );
        } catch (IOException e) {
            return onNotExist( fileName );
        }
     }
     
-    private ResponseEntity onExists( InputStreamResource isr ) {
+    private ResponseEntity onExists( ByteArrayResource bar, String fileName ) throws IOException {
         return ResponseEntity.status(HttpStatus.OK)
-                .body( isr );
+                .header( "Content-Disposition", "attachment; filename=" + fileName)
+                .contentType( MediaType.APPLICATION_OCTET_STREAM )
+                .contentLength( bar.contentLength() )
+                .body( bar );
     }
 
     private ResponseEntity onNotExist(String fileName) {
