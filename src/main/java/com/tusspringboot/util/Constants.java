@@ -9,6 +9,8 @@ public class Constants {
     public static final long PART_SIZE = 1054 * 1054 * 5;
 
     public static final String TEST_FILENAME = "testFilename";
+    
+    public static final String TEST_FILEEXT = ".pdf";
 
     public static final String TEST_FILEDIR = "testFileDirectory";
 

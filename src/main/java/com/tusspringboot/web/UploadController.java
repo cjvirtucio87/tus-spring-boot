@@ -90,11 +90,18 @@ public class UploadController {
     @PostMapping("/files/complete")
     public ResponseEntity completeUpload(
             @RequestHeader(name="fileName") String fileName,
+            @RequestHeader(name="fileExt") String fileExt,
             @RequestHeader(name="partNumbers") List<Long> partNumbers,
             @RequestHeader(name="fileSize") Long fileSize
     ) {
         List<FileInfo> partInfoList = partNumbers.stream()
-                .map(partNumber -> PartInfo.builder().fileName(fileName).partNumber(partNumber).fileSize(fileSize).build())
+                .map(partNumber -> { 
+                    return PartInfo.builder()
+                            .fileName(fileName)
+                            .fileExt(fileExt)
+                            .partNumber(partNumber)
+                            .fileSize(fileSize).build();
+                })
                 .collect(Collectors.toList());
 
         try {

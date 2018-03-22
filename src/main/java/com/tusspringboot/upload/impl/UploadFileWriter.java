@@ -74,7 +74,9 @@ public class UploadFileWriter implements FileWriter {
 
     public Long concat(List<FileInfo> partInfoList) throws IOException {
         String fileName = partInfoList.get(0).getFileName();
-        String finalPath = PathFactory.createFinalPath(fileName).toString();
+        String fileExt = partInfoList.get(0).getFileExt();
+        String finalPath = PathFactory.createFinalPath(fileName, fileExt).toString();
+        log.info( finalPath );
         Long totalBytesTransferred = 0L;
 
         try (

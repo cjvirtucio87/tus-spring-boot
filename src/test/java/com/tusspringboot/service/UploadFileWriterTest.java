@@ -1,6 +1,7 @@
 package com.tusspringboot.service;
 
 import static com.tusspringboot.util.Constants.TEST_FILENAME;
+import static com.tusspringboot.util.Constants.TEST_FILEEXT;
 import static com.tusspringboot.util.Constants.TEST_UPLOADLENGTH;
 import static com.tusspringboot.util.Constants.TEST_UPLOADOFFSET;
 import static com.tusspringboot.util.Constants.TEST_UPLOADOFFSET_INC_COMPLETE;
@@ -9,6 +10,7 @@ import static com.tusspringboot.util.Constants.TEST_UPLOAD_PART_FILESIZE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -19,6 +21,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +30,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+
 import com.tusspringboot.upload.api.FileInfo;
 import com.tusspringboot.upload.impl.PartInfo;
 import com.tusspringboot.upload.impl.UploadFileWriter;
-import com.tusspringboot.util.UploadPathFactory;
+import com.tusspringboot.util.PathFactory;
 
 /**
  * Created by cjvirtucio on 5/30/17.
@@ -57,9 +61,9 @@ public class UploadFileWriterTest {
     public void setup() throws IOException {
         testPartInfo = PartInfo.builder().fileName(TEST_FILENAME).partNumber(0L).build();
         testPartInfoList = createPartInfoList(TEST_FILENAME, TEST_UPLOAD_PART_COUNT, TEST_UPLOAD_PART_FILESIZE);
-        testDirPath = UploadPathFactory.createDirectoryPath(TEST_FILENAME);
-        testPartPath = UploadPathFactory.createPartPath(testPartInfo);
-        testFinalPath = UploadPathFactory.createFinalPath(TEST_FILENAME);
+        testDirPath = PathFactory.createDirectoryPath(TEST_FILENAME);
+        testPartPath = PathFactory.createPartPath(testPartInfo);
+        testFinalPath = PathFactory.createFinalPath(TEST_FILENAME, TEST_FILEEXT);
     }
 
     @Test
@@ -188,7 +192,7 @@ public class UploadFileWriterTest {
     public void tearDown() {
         testPartPath.toFile().delete();
         testPartInfoList.stream()
-                .map(UploadPathFactory::createPartPath)
+                .map(PathFactory::createPartPath)
                 .map(Path::toFile)
                 .forEach(File::delete);
         testFinalPath.toFile().delete();

@@ -13,7 +13,7 @@ import com.tusspringboot.util.PathFactory;
 
 @Service
 public class DownloadServiceImpl implements DownloadService {
-    public ByteArrayResource stream( String fileName ) throws IOException {
-        return new ByteArrayResource ( Files.readAllBytes( PathFactory.createFinalPath( fileName ) ) );
+    public ByteArrayResource stream( String fileName, String fileExt ) throws IOException {
+        return new ByteArrayResource ( Files.readAllBytes( PathFactory.createFinalPath( fileName, fileExt ) ) );
     }
 }

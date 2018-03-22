@@ -27,19 +27,22 @@ public class DownloadController {
         
     @GetMapping("/file")
     public ResponseEntity getDownload(  
-            @RequestHeader(name="fileName") String fileName
+            @RequestHeader(name="fileName") String fileName,
+            @RequestHeader(name="fileType") String fileType,
+            @RequestHeader(name="fileExt") String fileExt
     ) {
        try {
-           return onExists( downloadService.stream( fileName ), fileName );
+           return onExists( downloadService.stream( fileName, fileExt ), fileName, fileExt, fileType );
        } catch (IOException e) {
            return onNotExist( fileName );
        }
     }
     
-    private ResponseEntity onExists( ByteArrayResource bar, String fileName ) throws IOException {
+    private ResponseEntity onExists( ByteArrayResource bar, String fileName, String fileExt, String fileType ) throws IOException {
         return ResponseEntity.status(HttpStatus.OK)
-                .header( "Content-Disposition", "attachment; filename=" + fileName)
-                .contentType( MediaType.APPLICATION_OCTET_STREAM )
+                .header( "Content-Disposition", "attachment;filename=" + fileName + fileExt)
+                .header( "charset", "utf-8" )
+                .contentType( MediaType.valueOf( fileType ) )
                 .contentLength( bar.contentLength() )
                 .body( bar );
     }
@@ -47,6 +50,6 @@ public class DownloadController {
     private ResponseEntity onNotExist(String fileName) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .header("fileName", fileName)
-                .body("No upload has been created for file, " + fileName + ", yet.");
+                .body("No upload has been created for file," + fileName + ", yet.");
     }    
 }

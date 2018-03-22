@@ -4,6 +4,10 @@ import java.io.InputStream;
 
 public interface FileInfo {
     public String getFileName();
+    
+    public String getFileType();
+    
+    public String getFileExt();
 
     public Long getOffset();
     

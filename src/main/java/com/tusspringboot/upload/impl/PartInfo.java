@@ -15,6 +15,8 @@ import lombok.Value;
 @Value
 public class PartInfo implements FileInfo {
     private String fileName;
+    private String fileType;
+    private String fileExt;
     private Long partNumber;
     private Long offset;
     private Long length;

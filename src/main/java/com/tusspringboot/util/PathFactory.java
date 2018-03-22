@@ -26,8 +26,8 @@ public class PathFactory {
         );
     }
 
-    public static Path createFinalPath(String fileName) {
-        return Paths.get(TMP_DIR, fileName, fileName);
+    public static Path createFinalPath(String fileName, String fileExt) {
+        return Paths.get(TMP_DIR, fileName, fileName + fileExt);
     }
 
     protected PathFactory() {

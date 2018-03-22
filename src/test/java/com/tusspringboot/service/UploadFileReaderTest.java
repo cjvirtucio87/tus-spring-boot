@@ -8,9 +8,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,9 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+
 import com.tusspringboot.upload.impl.PartInfo;
 import com.tusspringboot.upload.impl.UploadFileReader;
-import com.tusspringboot.util.UploadPathFactory;
+import com.tusspringboot.util.PathFactory;
 
 /**
  * Created by cjvirtucio on 5/29/17.
@@ -44,8 +47,8 @@ public class UploadFileReaderTest {
     @Before
     public void setup() throws IOException {
         testPartInfo = PartInfo.builder().fileName(TEST_FILENAME).partNumber(0L).build();
-        testDirPath = UploadPathFactory.createDirectoryPath(TEST_FILENAME);
-        testPartPath = UploadPathFactory.createPartPath(testPartInfo);
+        testDirPath = PathFactory.createDirectoryPath(TEST_FILENAME);
+        testPartPath = PathFactory.createPartPath(testPartInfo);
         Files.createDirectory(testDirPath);
         Files.createFile(testPartPath);
     }
