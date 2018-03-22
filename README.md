@@ -10,6 +10,8 @@
 
 ### USAGE
 
+The client can be found [here](https://github.com/cjvirtucio87/tus-spring-boot-client) (though the `init.sh` script should take care of that for you).
+
 Clone this repo.
 
 This application is initialized using the `./init.sh` script. Run `./init.sh --help` to see the available options.
