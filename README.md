@@ -4,6 +4,7 @@
 ### REQUIREMENTS
 
 * docker (if you want it to run as a container)
+* nodejs and NPM (if you don't have docker)
 * JDK 8
 * maven
 
