@@ -217,10 +217,19 @@ public class UploadFileWriterTest {
         List<FileInfo> output = new ArrayList<>();
 
         for (long i = 0; i < uploadPartCount; i++) {
+
+            long offset = 0L;
+
+            if ( i > 0 ) {
+                offset = ( uploadPartCount * uploadPartFilesize ) * ( i / uploadPartCount ) + 1 )
+            } else {
+                offset = ( uploadPartCount * uploadPartFilesize ) * ( i / uploadPartCount )
+            }
+
             output.add(PartInfo.builder()
                     .fileName(uploadFilename)
                     .partNumber(i)
-                    .offset(i > 0 ? ( ( uploadPartCount * uploadPartFileSize ) * ( i  /  uploadPartCount ) + 1   ) :  ( ( uploadPartCount * uploadPartFileSize ) * ( i  /  uploadPartCount ) ))
+                    .offset(offset)
                     .length( ( uploadPartCount * uploadPartFileSize ) * ( i + 1 ) / uploadPartCount)
                     .fileSize(uploadPartFileSize)
                     .inputStream(createTestInputStream(createTestByteArray(uploadPartFileSize)))
