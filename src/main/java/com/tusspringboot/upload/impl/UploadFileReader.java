@@ -27,7 +27,7 @@ public class UploadFileReader implements FileReader {
         return partInfo.getOffset().equals(partInfo.getLength());
     }
 
-    public Long getOffset(FileInfo partInfo) {
+    public Long getOffset(String fileName) {
         String filePath = PathFactory.createPartPath((PartInfo) partInfo).toString();
         log.info("Retrieving pointer for file part, " + filePath);
         Long currentOffset = 0L;

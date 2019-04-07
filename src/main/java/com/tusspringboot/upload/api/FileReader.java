@@ -5,5 +5,5 @@ public interface FileReader {
 
     public boolean isComplete(FileInfo fileInfo);
     
-    public Long getOffset(FileInfo fileInfo);    
+    public Long getOffset(String fileName);    
 }
